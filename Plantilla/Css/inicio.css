@@ -1,0 +1,25 @@
+header div img{
+    width: 3vw;
+}
+section div ul{
+    width: fit-content;
+    background-color: #daff3da6;
+    margin: 0;
+    padding: 0;
+}
+section div ul li{
+    width: fit-content !important;
+    margin: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+section div ul li a{
+    width: fit-content !important;
+}
+.inicio div{
+    margin: 0.5rem;
+    min-height: 75vh;
+}
+.inicio div img{
+    width: 20vw;
+}
