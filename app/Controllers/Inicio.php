@@ -16,7 +16,7 @@ class Inicio extends BaseController
     public function mascotas(){
         try{
             $mascotas=new MascotaModel();
-            $mascotasVivas=$mascotas->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota")->where("Mascotas.fechaDefuncionMascota IS NULL AND (AmosMascotas.idMascota IS NULL OR (AmosMascotas.idMascota IS NOT NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL))")->find();
+            $mascotasVivas=$mascotas->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota")->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")->findAll();
             if(!$mascotasVivas){
                 return redirect()->to(base_url()."inicio")->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
