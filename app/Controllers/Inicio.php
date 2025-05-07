@@ -40,6 +40,17 @@ class Inicio extends BaseController
                 <tr>
                 ';
             }
+            if(sizeof($mascotasVivas)<10){
+                for($i=0;$i<(10-sizeof($mascotasVivas));$i++){
+                    $tabla.='<tr>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                            <tr>
+                            ';
+                }
+            }
             $tabla .= '</tbody> </table>';
             $data['table']=$tabla;
             return view('inicioView', $data);

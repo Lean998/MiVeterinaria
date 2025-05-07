@@ -57,8 +57,8 @@
                 <?php }?>
             </div>
             <div class="col-12 d-flex flex-column align-items-center">
-                <div class="col-12">
-                    <?php if(isset($table))echo $table;else{?> 
+                <div class="col-12 tabla d-flex align-items-center justify-content-center">
+                    <?php if(isset($table))echo "<div class='d-flex align-content-start'><div><button class='btn'>Agregar Mascota</button></div>".$table."</div>";else{?> 
                         <div class="inicio col-12">
                             <div class="d-flex flex-column justify-content-center align-items-center">
                                 <img class="img-fluid" src="<?= substr(base_url(),0,-17)?>Plantilla/imgs/InicioLogo.png" alt="Logo">

@@ -23,3 +23,21 @@ section div ul li a{
 .inicio div img{
     width: 20vw;
 }
+.tabla{
+    min-height: 85vh;
+}
+.tabla table{
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 65vw;
+    min-height: 30vh;
+}
+.tabla table td, .tabla table th{
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    height: 2.55rem;
+}
+.tabla table tr:nth-child(even) {
+    background-color: #dddddd;
+}
