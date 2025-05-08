@@ -11,9 +11,16 @@ class amoMascotaModel extends Model{
     protected $useTimestamps = false;
     protected $dateFormat = 'datetime';
 
-    public function getAllMascotas($amoId){
-        return $this->where('idAmo', $amoId)
-        ->where('fechaFinAmoMascota IS NULL')
+    public function getAllAmoMascotas($amoId){
+        return $this->select("mascotas.nombreMascota, mascotas.edadMascota, mascotas.especieMascota, mascotas.razaMascota, amosmascotas.fechaInicioAmoMascota, amosmascotas.fechaFinamoMascota")
+        ->join("mascotas","mascotas.idMascota = amosmascotas.idMascota")
+        ->where('amosmascotas.idAmo', $amoId)
+        ->findAll();
+    }
+    public function getAllMascotaAmos($mascotaId){
+        return $this->select("amos.nombreAmo, amos.apellidoAmo, amos.telefonoAmo, amos.fechaAltaAmo")
+        ->join("amos","amos.idAmo = amosmascotas.idAmo")
+        ->where('amosmascotas.idMascota', $mascotaId)
         ->findAll();
     }
 }

@@ -12,4 +12,8 @@ class VeterinarioModel extends Model{
     protected bool $updateOnlyChanged = true;
     protected $useTimestamps = false;
     protected $dateFormat = 'datetime';
+
+    public function getAllVeterinarios(){
+        return $this->select("nombreVeterinario, apellidoVeterinario, especialidadVeterinario, telefonoVeterinario")->findAll();
+    }
 }
