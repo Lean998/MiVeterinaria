@@ -1,19 +1,32 @@
 header div img{
     width: 3vw;
 }
-section div ul{
+header{
     width: fit-content;
-    background-color: #daff3da6;
+    background-color: #d5e42eb8;
     margin: 0;
     padding: 0;
 }
-section div ul li{
+header div ul li{
     width: fit-content !important;
-    margin: 0.5rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    display: flex!important;
+    align-items: center;
+    justify-content: center
 }
-section div ul li a{
+header div ul li a{
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0.25rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    border: solid 0.01rem #00000000 !important;
+    border-radius: 7px !important;
+}
+header div ul li a:hover{
+    border: solid 0.01rem black !important;
+}
+header div ul li a{
     width: fit-content !important;
 }
 .inicio div{
@@ -22,4 +35,34 @@ section div ul li a{
 }
 .inicio div img{
     width: 20vw;
+}
+.divListaSelect{
+    min-height: 13vh;
+}
+.agregarButton{
+    max-width: 10rem;
+}
+.agregarButton button:hover{
+    border: solid 0.01rem black;
+}
+.agregarButton button{
+    border: solid 0.01rem black;
+}
+.tabla{
+    min-height: 77vh;
+}
+.tabla table{
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 65vw;
+    min-height: 30vh;
+}
+.tabla table td, .tabla table th{
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    height: 2.55rem;
+}
+.tabla table tr:nth-child(even) {
+    background-color: #dddddd;
 }

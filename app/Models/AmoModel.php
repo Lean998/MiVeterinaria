@@ -12,4 +12,11 @@ class AmoModel extends Model{
     protected bool $updateOnlyChanged = true;
     protected $useTimestamps = false;
     protected $dateFormat = 'datetime';
+
+    public function getAllAmosList(){
+        return $this->select("idAmo, nombreAmo, apellidoAmo")->findAll();
+    }
+    public function getAllAmos(){
+        return $this->select("nombreAmo, apellidoAmo, telefonoAmo")->findAll();
+    }
 }

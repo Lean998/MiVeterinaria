@@ -110,7 +110,7 @@ class MiVeterinariaDBModel extends Model{
                 "unasigned" => true,
                 "auto_increment" => true
             ],
-            "nombreVeterinaria" => [
+            "nombreVeterinario" => [
                 "type" => "varchar",
                 "constraint" => 255
             ],
