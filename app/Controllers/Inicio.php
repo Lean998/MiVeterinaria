@@ -5,6 +5,7 @@ use App\Models\MascotaModel;
 use App\Models\AmoModel;
 use App\Models\AmoMascotaModel;
 use App\Models\VeterinarioModel;
+use Codeigniter\Validation;
 use Error;
 
 class Inicio extends BaseController
@@ -238,6 +239,106 @@ class Inicio extends BaseController
         $data["tipoTabla"]="Veterinarios";
         $data['table']=$tabla;
         return view('inicioView', $data);
+    }
+
+    public function altaMascotas(){
+        helper(['form']);   
+        $rules = [
+            'nombreMascota' => [
+            'rules' => 'required|min_length[2]|max_length[255]',
+            'errors' => [
+                'required' => 'El nombre de la mascota es obligatorio.',
+                'min_length' => 'El nombre debe tener al menos 5 caracteres.',
+                'max_length' => 'El nombre no puede superar los 30 caracteres.',
+                ]
+            ],
+            'especieMascota' => [
+                'rules' => 'required|min_length[4]|max_length[30]',
+                'errors' => [
+                    'required' => 'La especie es obligatoria.',
+                    'min_length' => 'La especie debe tener al menos 4 caracteres.',
+                    'max_length' => 'La especie no puede superar los 30 caracteres.',
+                ]
+            ],
+            'razaMascota' => [
+                'rules' => 'required|min_length[4]|max_length[30]',
+                'errors' => [
+                    'required' => 'La raza es obligatoria.',
+                    'min_length' => 'La raza debe tener al menos 4 caracteres.',
+                    'max_length' => 'La raza no puede superar los 30 caracteres.',
+                ]
+            ],
+            'edadMascota' => [
+                'rules' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
+                'errors' => [
+                    'required' => 'La edad es obligatoria.',
+                    'integer' => 'La edad debe ser un número entero.',
+                    'greater_than_equal_to' => 'La edad no puede ser menor a 0.',
+                    'less_than_equal_to' => 'La edad no puede ser mayor a 100.',
+                ]
+            ],
+        ];
+        if (!$this->validate($rules)) {
+            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/mascotas')->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+        }
+
+        $mascotaModel = new MascotaModel();
+        $data = [
+            'nombreMascota' => $this->request->getPost('nombreMascota'),
+            'especieMascota' => $this->request->getPost('especieMascota'),
+            'razaMascota' => $this->request->getPost('razaMascota'),
+            'edadMascota' => $this->request->getPost('edadMascota'),
+        ];
+        if($mascotaModel->save($data)){
+            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/mascotas')->with('success', 'Mascota registrada con exito!');
+        } else{
+            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
+        }
+    }
+
+    public function altaAmos(){
+        helper(['form']);   
+        $rules = [
+            'nombreAmo' => [
+            'rules' => 'required|min_length[5]|max_length[30]',
+            'errors' => [
+                'required' => 'El nombre del amo es obligatorio.',
+                'min_length' => 'El nombre debe tener al menos 5 caracteres.',
+                'max_length' => 'El nombre no puede superar los 30 caracteres.',
+                ]
+            ],
+            'apellidoAmo' => [
+                'rules' => 'required|min_length[4]|max_length[30]',
+                'errors' => [
+                    'required' => 'El apellido es obligatorio.',
+                    'min_length' => 'El apellido debe tener al menos 4 caracteres.',
+                    'max_length' => 'El apellido no puede superar los 30 caracteres.',
+                ]
+            ],
+            
+            'telefonoAmo' => [
+                'rules' => 'required|regex_match[/^(\\+54)?[0-9]{10,12}$/]',
+                'errors' => [
+                    'required' => 'El teléfono es obligatorio.',
+                    'regex_match' => 'Ingrese un número de teléfono válido. Ej: +542664123456 o 2664123456.',
+                ]
+            ]   
+        ];
+        if (!$this->validate($rules)) {
+            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/amos')->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+        }
+
+        $amosModel = new AmoModel();
+        $data = [
+            'nombreAmo' => $this->request->getPost('nombreAmo'),
+            'apellidoAmo' => $this->request->getPost('apellidoAmo'),
+            'telefonoAmo' => $this->request->getPost('telefonoAmo'),
+        ];
+        if($amosModel->save($data)){
+            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/amos')->with('success', 'Amo registrado con exito!');
+        } else{
+            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/amos')->with('error', 'Ocurrio un error al registrar el amo, intente de nuevo mas tarde.');
+        }
     }
     
 }
