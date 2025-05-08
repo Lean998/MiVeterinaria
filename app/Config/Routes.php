@@ -16,5 +16,6 @@ $routes->get('/inicio/mascota_amos', 'Inicio::mascotaAmos');
 $routes->post('/inicio/mascota_amos', 'Inicio::mascotaAmos');
 $routes->post('/inicio/alta_mascotas', 'Inicio::altaMascotas');
 $routes->post('/inicio/alta_amos', 'Inicio::altaAmos');
+$routes->post('/inicio/alta_veterinarios', 'Inicio::altaVeterinarios');
 
 $routes->get("/miveterinaria","MiVeterinariaDB::index");
