@@ -129,7 +129,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalAgregarAmosLabel">Agregar mascota</h5>
+                    <h5 class="modal-title" id="modalAgregarAmosLabel">Agregar Amo</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">    
@@ -162,7 +162,60 @@
                         </div>
                         
                         <div class="d-grid d-md-flex justify-content-md-end">
-                        <button type="submit" class="btn btn-primary">Guardar Mascota</button>
+                        <button type="submit" class="btn btn-primary">Guardar Amo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA EL ALTA DE VETERINARIOS !-->
+    <div class="modal fade" id="modalAgregarVeterinarios" tabindex="-1" aria-labelledby="modalAgregarVeterinariosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAgregarVeterinariosLabel">Agregar Veterinario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">    
+                <form action="<?=base_url()?>inicio/alta_veterinarios" method="post">
+                        <div class="row mb-3">
+                            <div class="col-12 mb-3">
+                                <label for="nombreVeterinario" class="form-label">Nombre</label>
+                                <input type="text"class="form-control <?= session('errors.nombreVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('nombreVeterinario') ?>" id="nombreVeterinario" name="nombreVeterinario" >
+                                <div class="invalid-feedback">
+                                    <?= session('errors.nombreVeterinario') ?? '' ?>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="apellidoVeterinario" class="form-label">Apellido</label>
+                                <input type="text" class="form-control <?= session('errors.apellidoVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('apellidoVeterinario') ?>" id="apellidoVeterinario" name="apellidoVeterinario" >
+                                <div class="invalid-feedback">
+                                    <?= session('errors.apellidoVeterinario') ?? '' ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12 mb-3">
+                                <label for="especialidadVeterinario" class="form-label">Especialidad</label>
+                                <input type="text" class="form-control <?= session('errors.especialidadVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('especialidadVeterinario') ?>" id="especialidadVeterinario" name="especialidadVeterinario" >
+                                <div class="invalid-feedback">
+                                    <?= session('errors.especialidadVeterinario') ?? '' ?>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="telefonoVeterinario" class="form-label">Telefono</label>
+                                <input type="text" class="form-control <?= session('errors.telefonoVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('telefonoVeterinario') ?>" id="telefonoVeterinario" name="telefonoVeterinario" >
+                                <div class="invalid-feedback">
+                                    <?= session('errors.telefonoVeterinario') ?? '' ?>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">Guardar Veterinario</button>
                         </div>
                     </form>
                 </div>
