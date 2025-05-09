@@ -5,6 +5,7 @@ namespace Config;
 use App\Validation\ValidationPass;
 use App\Validation\ValidationAlphaNum;
 use App\Validation\ValidationTelefono;
+use App\Validation\ValidationAlphaSpace;
 use App\Validation\ValidationAlphaNumDash;
 use App\Validation\ValidationAlphaNumSpace;
 use App\Validation\ValidationAlphaNumSpacePunct;
@@ -28,12 +29,13 @@ class Validation extends BaseConfig
      */
     public array $ruleSets = [
         Rules::class,
-        FormatRules::class,
         FileRules::class,
-        CreditCardRules::class,
+        FormatRules::class,
         ValidationPass::class,
+        CreditCardRules::class,
         ValidationTelefono::class,
         ValidationAlphaNum::class,
+        ValidationAlphaSpace::class,
         ValidationAlphaNumDash::class,
         ValidationAlphaNumSpace::class,
         ValidationAlphaNumSpacePunct::class,
