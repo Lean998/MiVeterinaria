@@ -14,6 +14,6 @@ class VeterinarioModel extends Model{
     protected $dateFormat = 'datetime';
 
     public function getAllVeterinarios(){
-        return $this->select("nombreVeterinario, apellidoVeterinario, especialidadVeterinario, telefonoVeterinario")->findAll();
+        return $this->select("nombreVeterinario, apellidoVeterinario, especialidadVeterinario, telefonoVeterinario, fechaIngresoVeterinario, fechaEgresoVeterinario")->findAll();
     }
 }

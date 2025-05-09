@@ -17,13 +17,40 @@ class Inicio extends BaseController
         return view('inicioView');
     }
     
-    private function generarTabla($arreglo,$tabla,$nColumnas){
+    private function generarTabla($arreglo,$tabla,$nColumnas,$ids=null){
+        $i=0;
+        if($ids!=null){
+            $tabla.="<th style='width: 4.3rem;'></th>";
+        }
+        $tabla.="</thead>
+                <tbody>";
         foreach($arreglo as $valor){
             $tabla .= '<tr>';
             foreach($valor as $item){
                 $tabla.='<td>'. $item.' </td>';
             }
-            $tabla.='<tr>';
+            if($ids!=null)if(!empty($ids)){
+                if(isset($valor["nombreMascota"])){$metodoModificar="modificar_mascota";$metodoEliminar="eliminar_mascota";}
+                if(isset($valor["nombreAmo"])){$metodoModificar="modificar_autor";$metodoEliminar="eliminar_autor";}
+                if(isset($valor["nombreVeterinario"])){$metodoModificar="modificar_veterinario";$metodoEliminar="eliminar_veterinario";}
+                if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="finalizar_relacion";}
+                $tabla.='<td><div class="dropdown options">
+                            <button class="btn dropdown-toggle dark btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
+                            <ul class="dropdown-menu dark">';
+                if(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"]))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoModificar."/".$ids[$i]["id"]).'">Modificar</a>
+                                </li>';
+                if(isset($metodoFinalizar))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoFinalizar."/".$ids[$i]["id"]).'">Finalizar</a>
+                                </li>';
+                if(isset($metodoEliminar))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoEliminar."/".$ids[$i]["id"]).'">Eliminar</a>
+                                </li>';
+                $tabla.='</ul>
+                         </div></td>';
+            }
+            $tabla.='</tr>';
+            $i++;
         }
         if(sizeof($arreglo)<10){
             for($i=0;$i<(10-sizeof($arreglo));$i++){
@@ -31,7 +58,8 @@ class Inicio extends BaseController
                 for($j=0;$j<$nColumnas;$j++){
                     $tabla.="<td> </td>";
                 }
-                $tabla.='<tr>';
+                if($ids!=null)$tabla.="<td> </td>";
+                $tabla.='</tr>';
             }
         }
         $tabla .= '</tbody> </table>';
@@ -41,6 +69,7 @@ class Inicio extends BaseController
         $mascotas=new MascotaModel();
         try{
             $mascotasVivas=$mascotas->getAllMascotasVivas();
+            $idMascotas=$mascotas->select("idMascota AS id")->findAll();
         } catch(Error $e){
             return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }
@@ -51,13 +80,19 @@ class Inicio extends BaseController
                     <th>Edad</th>
                     <th>Especie</th>
                     <th>Raza</th>
-            </thead>
-            <tbody>
+                    <th style="width: 9rem;">Fecha Alta</th>
+                    <th style="width: 10rem;">Fecha Defuncion</th>
         ';
-        if(isset($mascotasVivas)){
-            $tabla=$this->generarTabla($mascotasVivas,$tabla,4);
+        if(isset($mascotasVivas) && isset($idMascotas)){
+            for($i=0; $i<sizeof($mascotasVivas); $i++){
+                $mascotasVivas[$i]["fechaAltaMascota"]=substr($mascotasVivas[$i]["fechaAltaMascota"],0,-9);
+                if($mascotasVivas[$i]["fechaDefuncionMascota"]!=null){
+                    $mascotasVivas[$i]["fechaDefuncionMascota"]=substr($mascotasVivas[$i]["fechaDefuncionMascota"],0,-9);
+                }
+            }
+            $tabla=$this->generarTabla($mascotasVivas,$tabla,6,$idMascotas);
         }else{
-            $tabla=$this->generarTabla([],$tabla,4);
+            $tabla=$this->generarTabla([],$tabla,6);
         }
         $data['table']=$tabla;
         $data["tipoTabla"]="Mascotas";
@@ -80,10 +115,8 @@ class Inicio extends BaseController
                         <th>Edad</th>
                         <th>Especie</th>
                         <th>Raza</th>
-                        <th>Fecha de Inicio</th>
-                        <th>Fecha de Fin</th>
-                </thead>
-                <tbody>
+                        <th style="width: 10rem;">Fecha Inicio Relacion</th>
+                        <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
             $tabla=$this->generarTabla([],$tabla,6);
             $data=[
@@ -103,6 +136,7 @@ class Inicio extends BaseController
             $amoMascotaModel = new AmoMascotaModel();
             try{
                 $mascotas = $amoMascotaModel->getAllAmoMascotas($amo);
+                $idMascotas= $amoMascotaModel->getAllIdAmoMascotas($amo);
             } catch(Error $e){
                 return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
@@ -113,15 +147,21 @@ class Inicio extends BaseController
                         <th>Edad</th>
                         <th>Especie</th>
                         <th>Raza</th>
-                        <th>Fecha de Inicio</th>
-                        <th>Fecha de Fin</th>
-                </thead>
-                <tbody>
+                        <th style="width: 10rem;">Fecha Inicio Relacion</th>
+                        <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
-            if(!$mascotas){
-                $tabla=$this->generarTabla([],$tabla,6);
+            if(isset($mascotas) && isset($idMascotas)){
+                for($i=0; $i<sizeof($mascotas); $i++){
+                    $mascotas[$i]["fechaInicioAmoMascota"]=substr($mascotas[$i]["fechaInicioAmoMascota"],0,-9);
+                    if($mascotas[$i]["fechaFinAmoMascota"]!=null){
+                        $mascotas[$i]["fechaFinAmoMascota"]=substr($mascotas[$i]["fechaFinAmoMascota"],0,-9);
+                    }else{
+                        $mascotas[$i]["fechaFinAmoMascota"]="";
+                    }
+                }
+                $tabla=$this->generarTabla($mascotas,$tabla,6,$idMascotas);
             }else{
-                $tabla=$this->generarTabla($mascotas,$tabla,6);
+                $tabla=$this->generarTabla([],$tabla,6);
             }
             $data['table'] = $tabla;
             $data["tipoTabla"]="AmoMascotas";
@@ -144,11 +184,10 @@ class Inicio extends BaseController
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Telefono</th>
-                        <th>Fecha de Alta</th>
-                </thead>
-                <tbody>
+                        <th style="width: 10rem;">Fecha Inicio Relacion</th>
+                        <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
-            $tabla=$this->generarTabla([],$tabla,4);
+            $tabla=$this->generarTabla([],$tabla,5);
             $data=[
                 "amo_mascotas_list"=>$mascotas,
                 "table"=>$tabla
@@ -166,6 +205,7 @@ class Inicio extends BaseController
             $amoMascotaModel = new AmoMascotaModel();
             try{
                 $amos = $amoMascotaModel->getAllMascotaAmos($mascota);
+                $idAmos = $amoMascotaModel->getAllIdMascotaAmos($mascota);
             } catch(Error $e){
                 return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
@@ -175,14 +215,21 @@ class Inicio extends BaseController
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Telefono</th>
-                        <th>Fecha de Alta</th>
-                </thead>
-                <tbody>
+                        <th style="width: 10rem;">Fecha Inicio Relacion</th>
+                        <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
-            if(!$amos){
-                $tabla=$this->generarTabla([],$tabla,4);
+            if(isset($amos) && isset($idAmos)){
+                for($i=0; $i<sizeof($amos); $i++){
+                    $amos[$i]["fechaInicioAmoMascota"]=substr($amos[$i]["fechaInicioAmoMascota"],0,-9);
+                    if($amos[$i]["fechaFinAmoMascota"]!=null){
+                        $amos[$i]["fechaFinAmoMascota"]=substr($amos[$i]["fechaFinAmoMascota"],0,-9);
+                    }else{
+                        $amos[$i]["fechaFinAmoMascota"]="";
+                    }
+                }
+                $tabla=$this->generarTabla($amos,$tabla,5,$idAmos);
             }else{
-                $tabla=$this->generarTabla($amos,$tabla,4);
+                $tabla=$this->generarTabla([],$tabla,5);
             }
             $data['table'] = $tabla;
             $data["tipoTabla"]="MascotaAmos";
@@ -194,6 +241,7 @@ class Inicio extends BaseController
         $amosModel=new AmoModel();
         try{
             $amos=$amosModel->getAllAmos();
+            $idAmos=$amosModel->select("idAmo AS id")->findAll();
         } catch(Error $e){
             return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }
@@ -203,13 +251,15 @@ class Inicio extends BaseController
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Telefono</th>
-            </thead>
-            <tbody>
+                    <th style="width: 9rem;">Fecha Alta</th>
         ';
-        if(isset($amos)){
-            $tabla=$this->generarTabla($amos,$tabla,3);
+        if(isset($amos) && isset($idAmos)){
+            for($i=0; $i<sizeof($amos); $i++){
+                $amos[$i]["fechaAltaAmo"]=substr($amos[$i]["fechaAltaAmo"],0,-9);
+            }
+            $tabla=$this->generarTabla($amos,$tabla,4,$idAmos);
         }else{
-            $tabla=$this->generarTabla([],$tabla,3);
+            $tabla=$this->generarTabla([],$tabla,4);
         }
         $data["tipoTabla"]="Amos";
         $data['table']=$tabla;
@@ -220,6 +270,7 @@ class Inicio extends BaseController
         $veterinariosModel=new VeterinarioModel();
         try{
             $veterinarios=$veterinariosModel->getAllVeterinarios();
+            $idVeterinados=$veterinariosModel->select("idVeterinario AS id")->findAll();
         } catch(Error $e){
             return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }
@@ -230,13 +281,19 @@ class Inicio extends BaseController
                     <th>Apellido</th>
                     <th>Especialidad</th>
                     <th>Telefono</th>
-            </thead>
-            <tbody>
+                    <th style="width: 9rem;">Fecha Ingreso</th>
+                    <th style="width: 9rem;">Fecha Egreso</th>
         ';
-        if(isset($amos)){
-            $tabla=$this->generarTabla($veterinarios,$tabla,4);
+        if(isset($veterinarios) && isset($idVeterinados)){
+            for($i=0; $i<sizeof($veterinarios); $i++){
+                $veterinarios[$i]["fechaIngresoVeterinario"]=substr($veterinarios[$i]["fechaIngresoVeterinario"],0,-9);
+                if($veterinarios[$i]["fechaEgresoVeterinario"]!=null){
+                    $veterinarios[$i]["fechaEgresoVeterinario"]=substr($veterinarios[$i]["fechaEgresoVeterinario"],0,-9);
+                }
+            }
+            $tabla=$this->generarTabla($veterinarios,$tabla,6,$idVeterinados);
         }else{
-            $tabla=$this->generarTabla([],$tabla,4);
+            $tabla=$this->generarTabla([],$tabla,6);
         }
         $data["tipoTabla"]="Veterinarios";
         $data['table']=$tabla;

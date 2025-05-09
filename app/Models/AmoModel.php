@@ -17,6 +17,6 @@ class AmoModel extends Model{
         return $this->select("idAmo, nombreAmo, apellidoAmo")->findAll();
     }
     public function getAllAmos(){
-        return $this->select("nombreAmo, apellidoAmo, telefonoAmo")->findAll();
+        return $this->select("nombreAmo, apellidoAmo, telefonoAmo, fechaAltaAmo")->findAll();
     }
 }

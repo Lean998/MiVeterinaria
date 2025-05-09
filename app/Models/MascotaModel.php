@@ -14,7 +14,7 @@ class MascotaModel extends Model{
     protected $dateFormat = 'datetime';
 
     public function getAllMascotasVivas(){
-        return $this->select("nombreMascota, edadMascota, especieMascota, razaMascota")
+        return $this->select("nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota, fechaDefuncionMascota")
         ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
         ->where("Mascotas.fechaDefuncionMascota IS NULL AND (AmosMascotas.idMascota IS NULL OR AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
         ->findAll();

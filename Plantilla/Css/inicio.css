@@ -58,11 +58,19 @@ header div ul li a{
     min-height: 30vh;
 }
 .tabla table td, .tabla table th{
-    border: 1px solid #dddddd;
+    border: 1px solid #919843;
     text-align: left;
     padding: 8px;
     height: 2.55rem;
+    max-width: 11rem;
+    word-wrap: break-word;
 }
 .tabla table tr:nth-child(even) {
-    background-color: #dddddd;
+  background-color: #eeffff;
+}
+.tabla table tbody tr{
+    background-color: #fcffe0b8;
+}
+.tabla table tbody tr:hover {
+    background-color: #c9e2e2;
 }
