@@ -4,6 +4,7 @@ namespace Config;
 
 use App\Validation\ValidationPass;
 use App\Validation\ValidationAlphaNum;
+use App\Validation\ValidationTelefono;
 use App\Validation\ValidationAlphaNumDash;
 use App\Validation\ValidationAlphaNumSpace;
 use App\Validation\ValidationAlphaNumSpacePunct;
@@ -31,6 +32,7 @@ class Validation extends BaseConfig
         FileRules::class,
         CreditCardRules::class,
         ValidationPass::class,
+        ValidationTelefono::class,
         ValidationAlphaNum::class,
         ValidationAlphaNumDash::class,
         ValidationAlphaNumSpace::class,
