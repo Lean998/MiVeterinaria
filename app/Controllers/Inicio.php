@@ -246,9 +246,9 @@ class Inicio extends BaseController
     public function altaMascotas(){
         helper(['form','spanishErrors_helper']);   
         $rules = [
-            'nombreMascota' => 'required|min_length[4]|max_length[255]|alpha',
-            'especieMascota' => 'required|min_length[4]|max_length[30]|alpha',
-            'razaMascota' => 'required|min_length[4]|max_length[30]|alpha',
+            'nombreMascota' => 'required|min_length[4]|max_length[255]|valid_alpha_space[nombreMascota]',
+            'especieMascota' => 'required|min_length[4]|max_length[30]|valid_alpha_space[especieMascota]',
+            'razaMascota' => 'required|min_length[4]|max_length[30]|valid_alpha_space[razaMascota]',
             'edadMascota' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
         ];
         $validacion = service('validation');
@@ -275,14 +275,14 @@ class Inicio extends BaseController
     public function altaAmos(){
         helper(['form', 'spanishErrors_helper']);   
         $rules = [
-            'nombreAmo' => 'required|min_length[5]|max_length[30]',
-            'apellidoAmo' => 'required|min_length[4]|max_length[30]',
-            'telefonoAmo' => 'required|regex_match[/^(\\+54)?[0-9]{10,12}$/]',
+            'nombreAmo' => 'required|min_length[5]|max_length[30]|valid_alpha_space[nombreAmo]',
+            'apellidoAmo' => 'required|min_length[4]|max_length[30]|valid_alpha_space[apellidoAmo]',
+            'telefonoAmo' => 'required|telefono_valido[telefonoAmo]',
         ];
-        $validacion = service('validations');
+        $validacion = service('validation');
         $validacion->setRules($rules,spanishErrorMessages($rules));
         if (!$validacion->withRequest($this->request)->run()) {
-            return redirect()->to(base_url().'inicio/mascotas')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+            return redirect()->to(base_url().'inicio/amos')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
 
         $amosModel = new AmoModel();
@@ -302,9 +302,9 @@ class Inicio extends BaseController
     public function altaVeterinarios(){
         helper(['form', 'SpanishErrors_helper']);   
         $rules = [
-            'nombreVeterinario' => 'required|min_length[5]|max_length[30]',
-            'apellidoVeterinario' =>  'required|min_length[4]|max_length[30]',
-            'especialidadVeterinario' => 'required|min_length[4]|max_length[30]',
+            'nombreVeterinario' => 'required|min_length[5]|max_length[30]|valid_alpha_space[nombreVeterinario]',
+            'apellidoVeterinario' =>  'required|min_length[4]|max_length[30]|valid_alpha_space[apellidoVeterinario]',
+            'especialidadVeterinario' => 'required|min_length[4]|max_length[30]|valid_alpha_space[especialidadVeterinario]',
             'telefonoVeterinario' => 'required|telefono_valido[telefonoVeterinario]',   
         ];
         $validacion = service('validation');
