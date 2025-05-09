@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controllers;
+
+use App\Libraries\SpanishErrorsLibrary;
 use App\Models\MascotaModel;
 use App\Models\AmoModel;
 use App\Models\AmoMascotaModel;
@@ -244,7 +246,7 @@ class Inicio extends BaseController
     public function altaMascotas(){
         helper(['form','spanishErrors_helper']);   
         $rules = [
-            'nombreMascota' => 'required|min_length[2]|max_length[255]|alpha',
+            'nombreMascota' => 'required|min_length[4]|max_length[255]|alpha',
             'especieMascota' => 'required|min_length[4]|max_length[30]|alpha',
             'razaMascota' => 'required|min_length[4]|max_length[30]|alpha',
             'edadMascota' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
@@ -271,35 +273,16 @@ class Inicio extends BaseController
     }
 
     public function altaAmos(){
-        helper(['form']);   
+        helper(['form', 'spanishErrors_helper']);   
         $rules = [
-            'nombreAmo' => [
-            'rules' => 'required|min_length[5]|max_length[30]',
-            'errors' => [
-                'required' => 'El nombre del amo es obligatorio.',
-                'min_length' => 'El nombre debe tener al menos 5 caracteres.',
-                'max_length' => 'El nombre no puede superar los 30 caracteres.',
-                ]
-            ],
-            'apellidoAmo' => [
-                'rules' => 'required|min_length[4]|max_length[30]',
-                'errors' => [
-                    'required' => 'El apellido es obligatorio.',
-                    'min_length' => 'El apellido debe tener al menos 4 caracteres.',
-                    'max_length' => 'El apellido no puede superar los 30 caracteres.',
-                ]
-            ],
-            
-            'telefonoAmo' => [
-                'rules' => 'required|regex_match[/^(\\+54)?[0-9]{10,12}$/]',
-                'errors' => [
-                    'required' => 'El teléfono es obligatorio.',
-                    'regex_match' => 'Ingrese un número de teléfono válido. Ej: +542664123456 o 2664123456.',
-                ]
-            ]   
+            'nombreAmo' => 'required|min_length[5]|max_length[30]',
+            'apellidoAmo' => 'required|min_length[4]|max_length[30]',
+            'telefonoAmo' => 'required|regex_match[/^(\\+54)?[0-9]{10,12}$/]',
         ];
-        if (!$this->validate($rules)) {
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/amos')->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+        $validacion = service('validations');
+        $validacion->setRules($rules,spanishErrorMessages($rules));
+        if (!$validacion->withRequest($this->request)->run()) {
+            return redirect()->to(base_url().'inicio/mascotas')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
 
         $amosModel = new AmoModel();
@@ -317,42 +300,17 @@ class Inicio extends BaseController
     }
 
     public function altaVeterinarios(){
-        helper(['form']);   
+        helper(['form', 'SpanishErrors_helper']);   
         $rules = [
-            'nombreVeterinario' => [
-            'rules' => 'required|min_length[5]|max_length[30]',
-            'errors' => [
-                'required' => 'El nombre del veterinario es obligatorio.',
-                'min_length' => 'El nombre debe tener al menos 5 caracteres.',
-                'max_length' => 'El nombre no puede superar los 30 caracteres.',
-                ]
-            ],
-            'apellidoVeterinario' => [
-                'rules' => 'required|min_length[4]|max_length[30]',
-                'errors' => [
-                    'required' => 'El apellido es obligatorio.',
-                    'min_length' => 'El apellido debe tener al menos 4 caracteres.',
-                    'max_length' => 'El apellido no puede superar los 30 caracteres.',
-                ]
-            ],
-            'especialidadVeterinario' => [
-                'rules' => 'required|min_length[4]|max_length[30]',
-                'errors' => [
-                    'required' => 'La especialidad es obligatoria.',
-                    'min_length' => 'La especialidad debe tener al menos 4 caracteres.',
-                    'max_length' => 'La especialidad no puede superar los 30 caracteres.',
-                ]
-            ],
-            'telefonoVeterinario' => [
-                'rules' => 'required|regex_match[/^(\\+54)?[0-9]{10,12}$/]',
-                'errors' => [
-                    'required' => 'El teléfono es obligatorio.',
-                    'regex_match' => 'Ingrese un número de teléfono válido. Ej: +542664123456 o 2664123456.',
-                ]
-            ]   
+            'nombreVeterinario' => 'required|min_length[5]|max_length[30]',
+            'apellidoVeterinario' =>  'required|min_length[4]|max_length[30]',
+            'especialidadVeterinario' => 'required|min_length[4]|max_length[30]',
+            'telefonoVeterinario' => 'required|telefono_valido[telefonoVeterinario]',   
         ];
-        if (!$this->validate($rules)) {
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/veterinarios')->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+        $validacion = service('validation');
+        $validacion->setRules($rules,spanishErrorMessages($rules));
+        if (!$validacion->withRequest($this->request)->run()) {
+            return redirect()->to(base_url().'inicio/veterinarios')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
 
         $veterinarioModel = new VeterinarioModel();
