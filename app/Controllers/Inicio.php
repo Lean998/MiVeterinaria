@@ -242,44 +242,17 @@ class Inicio extends BaseController
     }
 
     public function altaMascotas(){
-        helper(['form']);   
+        helper(['form','spanishErrors_helper']);   
         $rules = [
-            'nombreMascota' => [
-            'rules' => 'required|min_length[2]|max_length[255]',
-            'errors' => [
-                'required' => 'El nombre de la mascota es obligatorio.',
-                'min_length' => 'El nombre debe tener al menos 5 caracteres.',
-                'max_length' => 'El nombre no puede superar los 30 caracteres.',
-                ]
-            ],
-            'especieMascota' => [
-                'rules' => 'required|min_length[4]|max_length[30]',
-                'errors' => [
-                    'required' => 'La especie es obligatoria.',
-                    'min_length' => 'La especie debe tener al menos 4 caracteres.',
-                    'max_length' => 'La especie no puede superar los 30 caracteres.',
-                ]
-            ],
-            'razaMascota' => [
-                'rules' => 'required|min_length[4]|max_length[30]',
-                'errors' => [
-                    'required' => 'La raza es obligatoria.',
-                    'min_length' => 'La raza debe tener al menos 4 caracteres.',
-                    'max_length' => 'La raza no puede superar los 30 caracteres.',
-                ]
-            ],
-            'edadMascota' => [
-                'rules' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
-                'errors' => [
-                    'required' => 'La edad es obligatoria.',
-                    'integer' => 'La edad debe ser un número entero.',
-                    'greater_than_equal_to' => 'La edad no puede ser menor a 0.',
-                    'less_than_equal_to' => 'La edad no puede ser mayor a 100.',
-                ]
-            ],
+            'nombreMascota' => 'required|min_length[2]|max_length[255]|alpha',
+            'especieMascota' => 'required|min_length[4]|max_length[30]|alpha',
+            'razaMascota' => 'required|min_length[4]|max_length[30]|alpha',
+            'edadMascota' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
         ];
-        if (!$this->validate($rules)) {
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/mascotas')->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+        $validacion = service('validation');
+        $validacion->setRules($rules,spanishErrorMessages($rules));
+        if (!$validacion->withRequest($this->request)->run()) {
+            return redirect()->to(base_url().'inicio/mascotas')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
 
         $mascotaModel = new MascotaModel();
@@ -291,9 +264,9 @@ class Inicio extends BaseController
             'fechaAltaMascota' => Time::now()->toDateTimeString(),
         ];
         if($mascotaModel->save($data)){
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/mascotas')->with('success', 'Mascota registrada con exito!');
+            return redirect()->to(base_url().'public/index.php/inicio/mascotas')->with('success', 'Mascota registrada con exito!');
         } else{
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
+            return redirect()->to(base_url().'public/index.php/inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
         }
     }
 

@@ -86,14 +86,14 @@
                                 <label for="nombreMascota" class="form-label">Nombre</label>
                                 <input type="text"class="form-control <?= session('errors.nombreMascota') ? 'is-invalid' : '' ?>" value="<?= old('nombreMascota') ?>" id="nombreMascota" name="nombreMascota" >
                                 <div class="invalid-feedback">
-                                    <?= session('errors.nombreMascota') ?? '' ?>
+                                    <?= str_replace("nombreMascota","Nombre",session('errors.nombreMascota')) ?? '' ?>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <label for="especieMascota" class="form-label">Especie</label>
                                 <input type="text" class="form-control <?= session('errors.especieMascota') ? 'is-invalid' : '' ?>" value="<?= old('especieMascota') ?>" id="especieMascota" name="especieMascota" >
                                 <div class="invalid-feedback">
-                                    <?= session('errors.especieMascota') ?? '' ?>
+                                    <?= str_replace("especieMascota","Especie",session('errors.especieMascota')) ?? '' ?>
                                 </div>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                                 <label for="razaMascota" class="form-label">Raza</label>
                                 <input type="text" class="form-control <?= session('errors.razaMascota') ? 'is-invalid' : '' ?>" value="<?= old('razaMascota') ?>" id="razaMascota" name="razaMascota" >
                                 <div class="invalid-feedback">
-                                    <?= session('errors.razaMascota') ?? '' ?>
+                                    <?= str_replace("razaMascota","Raza",session('errors.especieMascota')) ?? '' ?>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -202,14 +202,14 @@
                                 <label for="especialidadVeterinario" class="form-label">Especialidad</label>
                                 <input type="text" class="form-control <?= session('errors.especialidadVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('especialidadVeterinario') ?>" id="especialidadVeterinario" name="especialidadVeterinario" >
                                 <div class="invalid-feedback">
-                                    <?= session('errors.especialidadVeterinario') ?? '' ?>
+                                    <?= str_replace("especialidadVeterinario","Especialidad",session('errors.especialidadVeterinario')) ?? '' ?>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <label for="telefonoVeterinario" class="form-label">Telefono</label>
                                 <input type="text" class="form-control <?= session('errors.telefonoVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('telefonoVeterinario') ?>" id="telefonoVeterinario" name="telefonoVeterinario" >
                                 <div class="invalid-feedback">
-                                    <?= session('errors.telefonoVeterinario') ?? '' ?>
+                                    <?php str_replace("telefonoVeterinario","Telefono",session('errors.telefonoVeterinario')) ?? '' ?>
                                 </div>
                             </div>
                         </div>
