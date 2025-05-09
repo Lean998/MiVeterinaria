@@ -6,7 +6,7 @@ class SpanishErrorsLibrary {
         $mensajesReglas=array();
         for($i= 0; $i<sizeof($reglas);$i++){
             switch($this->arregloString($reglas[$i])){
-                case "required": $mensajesReglas["required"] = $entrada." no opcional"; break;
+                case "required": $mensajesReglas["required"] = $entrada." es obligatorio"; break;
                 case "min_length":$mensajesReglas["min_length"] = "minimo ".trim($reglas[$i][1],"]")." caracteres"; break;
                 case "max_length": $mensajesReglas["max_length"] = "maximo ".trim($reglas[$i][1],"]")." caracteres"; break;
                 case "in_list": $mensajesReglas["in_list"] = $entrada." debe contener minimo uno de estos caracteres: ".$reglas[$i][1]; break;
@@ -46,6 +46,7 @@ class SpanishErrorsLibrary {
                 case "valid_alphanum_dash": $mensajesReglas["valid_alphanum_dash"] = "Debe contener letras minimo 3 letras sin espacios<br>Puede tener numeros y _-"; break;
                 case "valid_alphanum_space": $mensajesReglas["valid_alphanum_space"] = "Debe contener letras minimo 3 letras<br>Puede tener numeros y espacios"; break;
                 case "valid_alphanum_space_punct": $mensajesReglas["valid_alphanum_space_punct"] = 'Debe contener letras minimo 3 letras<br>Puede tener numeros y espacios<br>Puede tener ,;.:¡!¿?\'"@()<>#=_*/+-'; break;
+                case "telefono_valido" :$mensajesReglas["telefono_valido"] = "Numero de telefono invalido"; break;
             }
         }
         return $mensajesReglas;
