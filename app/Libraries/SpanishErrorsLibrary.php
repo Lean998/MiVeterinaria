@@ -6,7 +6,7 @@ class SpanishErrorsLibrary {
         $mensajesReglas=array();
         for($i= 0; $i<sizeof($reglas);$i++){
             switch($this->arregloString($reglas[$i])){
-                case "required": $mensajesReglas["required"] = $entrada." es obligatorio"; break;
+                case "required": $mensajesReglas["required"] = $entrada." no es opcional"; break;
                 case "min_length":$mensajesReglas["min_length"] = "minimo ".trim($reglas[$i][1],"]")." caracteres"; break;
                 case "max_length": $mensajesReglas["max_length"] = "maximo ".trim($reglas[$i][1],"]")." caracteres"; break;
                 case "in_list": $mensajesReglas["in_list"] = $entrada." debe contener minimo uno de estos caracteres: ".$reglas[$i][1]; break;
@@ -43,6 +43,7 @@ class SpanishErrorsLibrary {
                 case "valid_date": $mensajesReglas["valid_date"] = "Ingrese una fecha valida"; break;
                 case "valid_pass": $mensajesReglas["valid_pass"] = "Contraseña invalida<br>Tiene que contener letras y numeros sin espacios<br>Al menos una Mayuscula<br>Al menos un caracter especial #@|$%&¡!¿?_-"; break;
                 case "valid_alphanum": $mensajesReglas["valid_alphanum"] = "Debe contener letras minimo 3 letras sin espacios<br>Puede tener numeros"; break;
+                case "valid_alpha_space": $mensajesReglas["valid_alpha_space"] = 'Debe contener minimo 4 letras<br>Puede tener espacios<br>y tener A-Za-záÁéÉíÍóÓúÚñÑäÄëËïÏöÖüÜ'; break;
                 case "valid_alphanum_dash": $mensajesReglas["valid_alphanum_dash"] = "Debe contener letras minimo 3 letras sin espacios<br>Puede tener numeros y _-"; break;
                 case "valid_alphanum_space": $mensajesReglas["valid_alphanum_space"] = "Debe contener letras minimo 3 letras<br>Puede tener numeros y espacios"; break;
                 case "valid_alphanum_space_punct": $mensajesReglas["valid_alphanum_space_punct"] = 'Debe contener letras minimo 3 letras<br>Puede tener numeros y espacios<br>Puede tener ,;.:¡!¿?\'"@()<>#=_*/+-'; break;
