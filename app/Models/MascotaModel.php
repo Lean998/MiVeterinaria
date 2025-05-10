@@ -14,12 +14,20 @@ class MascotaModel extends Model{
     protected $dateFormat = 'datetime';
 
     public function getAllMascotasVivas(){
-        return $this->select("nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota, fechaDefuncionMascota")
+        return $this->select("mascotas.idMascota AS id,nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota")
         ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
-        ->where("Mascotas.fechaDefuncionMascota IS NULL AND (AmosMascotas.idMascota IS NULL OR AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->groupBy("mascotas.idMascota")
         ->findAll();
     }
 
+    public function getAllMascotasVivasList(){
+        return $this->select("mascotas.idMascota, mascotas.nombreMascota")
+        ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
+        ->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->groupBy("mascotas.idMascota")
+        ->findAll();
+    }
     public function getAllMascotasList(){
         return $this->select("idMascota, nombreMascota")->findAll();
     }

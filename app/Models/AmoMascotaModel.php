@@ -4,6 +4,8 @@ use CodeIgniter\Model;
 
 class amoMascotaModel extends Model{
     protected $table = "AmosMascotas";
+    protected $primaryKey = "idAmoMascota";
+    protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $allowedFields = ['idAmo', 'idMascota','fechaInicioAmoMascota','fechaFinAmoMascota'];
@@ -18,7 +20,7 @@ class amoMascotaModel extends Model{
         ->findAll();
     }
     public function getAllIdAmoMascotas($amoId){
-        return $this->select("idMascota AS id")->where("idAmo=".$amoId)->findAll();
+        return $this->select("idAmoMascota AS id")->where("idAmo=".$amoId)->findAll();
     }
     public function getAllMascotaAmos($mascotaId){
         return $this->select("amos.nombreAmo, amos.apellidoAmo, amos.telefonoAmo, amosmascotas.fechaInicioAmoMascota, amosmascotas.fechaFinAmoMascota")
@@ -27,6 +29,6 @@ class amoMascotaModel extends Model{
         ->findAll();
     }
     public function getAllIdMascotaAmos($mascotaId){
-        return $this->select("idAmo AS id")->where("idMascota=".$mascotaId)->findAll();
+        return $this->select("idAmoMascota AS id")->where("idMascota=".$mascotaId)->findAll();
     }
 }

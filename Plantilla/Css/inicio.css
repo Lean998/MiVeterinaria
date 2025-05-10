@@ -74,3 +74,18 @@ header div ul li a{
 .tabla table tbody tr:hover {
     background-color: #c9e2e2;
 }
+
+.divFinalRel{
+    min-height: 75vh;
+}
+#formFinalRel{
+    padding: 2rem;
+    border: solid 0.01rem black;
+    border-radius: 7px;
+    min-height: 30vh;
+}
+#formNewRel{
+    border: solid 0.01rem black;
+    border-radius: 7px;
+    padding: 2rem;
+}

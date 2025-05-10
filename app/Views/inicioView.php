@@ -60,13 +60,28 @@
             </div>
             <div class="col-12 d-flex flex-column align-items-center">
                 <div class="col-12 tabla d-flex align-items-start justify-content-center">
-                    <?php if(isset($table)){echo "<div class='d-flex flex-column align-content-start'>"; if(isset($tipoTabla)){echo "<div class='agregarButton'><button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregar$tipoTabla'>"; switch($tipoTabla){ case "Mascotas": echo "Agregar Mascota";break; case "Amos": echo "Agregar Amo";break; case "Veterinarios": echo "Agregar Veterinario";break; case "AmoMascotas": echo "Agregar Relacion Amo-Mascota";break; case "MascotaAmos": echo "Agregar Relacion Mascota-Amo";} echo "</button></div>";} echo $table."</div>";}else{?> 
+                    <?php if(isset($table)){echo "<div class='d-flex flex-column align-content-start'>";}
+                    if(isset($tipoTabla)&&!isset($invalidNew)){
+                        echo "<div class='agregarButton'>
+                                <button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregar$tipoTabla'>";
+                                 switch($tipoTabla){
+                                     case "Mascotas": echo "Agregar Mascota";break;
+                                     case "Amos": echo "Agregar Amo";break; 
+                                     case "Veterinarios": echo "Agregar Veterinario";break; 
+                                     case "AmoMascotas": echo "Agregar Relacion Amo-Mascota";break; 
+                                     case "MascotaAmos": echo "Agregar Relacion Mascota-Amo";
+                                 } 
+                        echo "</button></div>";
+                    }
+                    if(isset($table)){ 
+                        echo $table."</div>";
+                    }else{?> 
                         <div class="inicio col-12">
                             <div class="d-flex flex-column justify-content-center align-items-center">
                                 <img class="img-fluid" src="<?= substr(base_url(),0,-17)?>Plantilla/imgs/InicioLogo.png" alt="Logo">
                             </div>
                         </div>
-                        <?php }?>
+                    <?php }?>
                 </div>
             </div>
         </div>

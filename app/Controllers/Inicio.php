@@ -17,7 +17,7 @@ class Inicio extends BaseController
         return view('inicioView');
     }
     
-    private function generarTabla($arreglo,$tabla,$nColumnas,$ids=null){
+    private function generarTabla($arreglo,$tabla,$nColumnas,&$validNew,$ids=null){
         $i=0;
         if($ids!=null){
             $tabla.="<th style='width: 4.3rem;'></th>";
@@ -25,18 +25,26 @@ class Inicio extends BaseController
         $tabla.="</thead>
                 <tbody>";
         foreach($arreglo as $valor){
+            if(isset($valor["id"]))$j=0;
             $tabla .= '<tr>';
             foreach($valor as $item){
+                if(isset($j))if($j==0){$j++;continue;}
                 $tabla.='<td>'. $item.' </td>';
             }
             if($ids!=null)if(!empty($ids)){
                 if(isset($valor["nombreMascota"])){$metodoModificar="modificar_mascota";$metodoEliminar="eliminar_mascota";}
                 if(isset($valor["nombreAmo"])){$metodoModificar="modificar_autor";$metodoEliminar="eliminar_autor";}
                 if(isset($valor["nombreVeterinario"])){$metodoModificar="modificar_veterinario";$metodoEliminar="eliminar_veterinario";}
-                if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="finalizar_relacion";}
+                if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="finalizar_relacion";$validNew=false;}
                 $tabla.='<td><div class="dropdown options">
                             <button class="btn dropdown-toggle dark btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
                             <ul class="dropdown-menu dark">';
+                if(isset($valor["nombreMascota"]) && isset($valor["fechaAltaMascota"]))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_mascota_amo/".$ids[$i]["id"]).'">Nueva Relacion</a>
+                                </li>';
+                if(isset($valor["nombreAmo"]) && isset($valor["fechaAltaAmo"]))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_amo_mascota/".$ids[$i]["id"]).'">Nueva Relacion</a>
+                                </li>';
                 if(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"]))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoModificar."/".$ids[$i]["id"]).'">Modificar</a>
                                 </li>';
@@ -66,6 +74,7 @@ class Inicio extends BaseController
         return $tabla;
     }
     public function mascotas(){
+        $validNew=true;
         $mascotas=new MascotaModel();
         try{
             $mascotasVivas=$mascotas->getAllMascotasVivas();
@@ -81,25 +90,23 @@ class Inicio extends BaseController
                     <th>Especie</th>
                     <th>Raza</th>
                     <th style="width: 9rem;">Fecha Alta</th>
-                    <th style="width: 10rem;">Fecha Defuncion</th>
         ';
         if(isset($mascotasVivas) && isset($idMascotas)){
             for($i=0; $i<sizeof($mascotasVivas); $i++){
                 $mascotasVivas[$i]["fechaAltaMascota"]=substr($mascotasVivas[$i]["fechaAltaMascota"],0,-9);
-                if($mascotasVivas[$i]["fechaDefuncionMascota"]!=null){
-                    $mascotasVivas[$i]["fechaDefuncionMascota"]=substr($mascotasVivas[$i]["fechaDefuncionMascota"],0,-9);
-                }
             }
-            $tabla=$this->generarTabla($mascotasVivas,$tabla,6,$idMascotas);
+            $tabla=$this->generarTabla($mascotasVivas,$tabla,5,$validNew,$idMascotas);
         }else{
-            $tabla=$this->generarTabla([],$tabla,6);
+            $tabla=$this->generarTabla([],$tabla,5,$validNew);
         }
         $data['table']=$tabla;
+        if(!$validNew)$data["invalidNew"]=true;
         $data["tipoTabla"]="Mascotas";
         return view('inicioView', $data);
     }
 
     public function amoMascotas() {
+        $validNew=true;
         $amo=$this->request->getPost("listaAmos");
         if(!isset($amo)){
             $amoModel=new AmoModel();
@@ -118,7 +125,7 @@ class Inicio extends BaseController
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
-            $tabla=$this->generarTabla([],$tabla,6);
+            $tabla=$this->generarTabla([],$tabla,6,$validNew);
             $data=[
                 "mascota_amos_list"=>$amos,
                 "table"=>$tabla
@@ -159,9 +166,9 @@ class Inicio extends BaseController
                         $mascotas[$i]["fechaFinAmoMascota"]="";
                     }
                 }
-                $tabla=$this->generarTabla($mascotas,$tabla,6,$idMascotas);
+                $tabla=$this->generarTabla($mascotas,$tabla,6,$validNew,$idMascotas);
             }else{
-                $tabla=$this->generarTabla([],$tabla,6);
+                $tabla=$this->generarTabla([],$tabla,6,$validNew);
             }
             $data['table'] = $tabla;
             $data["tipoTabla"]="AmoMascotas";
@@ -170,6 +177,7 @@ class Inicio extends BaseController
     }
 
     public function mascotaAmos() {
+        $validNew=true;
         $mascota=$this->request->getPost("ListaMascotas");
         if(!isset($mascota)){
             $mascotaModel=new MascotaModel();
@@ -187,7 +195,7 @@ class Inicio extends BaseController
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
-            $tabla=$this->generarTabla([],$tabla,5);
+            $tabla=$this->generarTabla([],$tabla,5,$validNew);
             $data=[
                 "amo_mascotas_list"=>$mascotas,
                 "table"=>$tabla
@@ -227,17 +235,19 @@ class Inicio extends BaseController
                         $amos[$i]["fechaFinAmoMascota"]="";
                     }
                 }
-                $tabla=$this->generarTabla($amos,$tabla,5,$idAmos);
+                $tabla=$this->generarTabla($amos,$tabla,5,$validNew,$idAmos);
             }else{
-                $tabla=$this->generarTabla([],$tabla,5);
+                $tabla=$this->generarTabla([],$tabla,5,$validNew);
             }
             $data['table'] = $tabla;
+            if(!$validNew)$data["invalidNew"]=true;
             $data["tipoTabla"]="MascotaAmos";
             return view('inicioView', $data);
         }
     }
 
     public function amos(){
+        $validNew=true;
         $amosModel=new AmoModel();
         try{
             $amos=$amosModel->getAllAmos();
@@ -257,16 +267,18 @@ class Inicio extends BaseController
             for($i=0; $i<sizeof($amos); $i++){
                 $amos[$i]["fechaAltaAmo"]=substr($amos[$i]["fechaAltaAmo"],0,-9);
             }
-            $tabla=$this->generarTabla($amos,$tabla,4,$idAmos);
+            $tabla=$this->generarTabla($amos,$tabla,4,$validNew,$idAmos);
         }else{
-            $tabla=$this->generarTabla([],$tabla,4);
+            $tabla=$this->generarTabla([],$tabla,4,$validNew);
         }
         $data["tipoTabla"]="Amos";
+        if(!$validNew)$data["invalidNew"]=true;
         $data['table']=$tabla;
         return view('inicioView', $data);
     }
 
     public function veterinarios(){
+        $validNew=true;
         $veterinariosModel=new VeterinarioModel();
         try{
             $veterinarios=$veterinariosModel->getAllVeterinarios();
@@ -291,11 +303,12 @@ class Inicio extends BaseController
                     $veterinarios[$i]["fechaEgresoVeterinario"]=substr($veterinarios[$i]["fechaEgresoVeterinario"],0,-9);
                 }
             }
-            $tabla=$this->generarTabla($veterinarios,$tabla,6,$idVeterinados);
+            $tabla=$this->generarTabla($veterinarios,$tabla,6,$validNew,$idVeterinados);
         }else{
-            $tabla=$this->generarTabla([],$tabla,6);
+            $tabla=$this->generarTabla([],$tabla,6,$validNew);
         }
         $data["tipoTabla"]="Veterinarios";
+        if(!$validNew)$data["invalidNew"]=true;
         $data['table']=$tabla;
         return view('inicioView', $data);
     }
@@ -323,9 +336,9 @@ class Inicio extends BaseController
             'fechaAltaMascota' => Time::now()->toDateTimeString(),
         ];
         if($mascotaModel->save($data)){
-            return redirect()->to(base_url().'public/index.php/inicio/mascotas')->with('success', 'Mascota registrada con exito!');
+            return redirect()->to(base_url().'inicio/mascotas')->with('success', 'Mascota registrada con exito!');
         } else{
-            return redirect()->to(base_url().'public/index.php/inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
+            return redirect()->to(base_url().'inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
         }
     }
 
@@ -350,9 +363,9 @@ class Inicio extends BaseController
             'fechaAltaAmo' => Time::now()->toDateTimeString(),
         ];
         if($amosModel->save($data)){
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/amos')->with('success', 'Amo registrado con exito!');
+            return redirect()->to(substr(base_url(), 0, -17).'inicio/amos')->with('success', 'Amo registrado con exito!');
         } else{
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/amos')->with('error', 'Ocurrio un error al registrar el amo, intente de nuevo mas tarde.');
+            return redirect()->to(substr(base_url(), 0, -17).'inicio/amos')->with('error', 'Ocurrio un error al registrar el amo, intente de nuevo mas tarde.');
         }
     }
 
@@ -379,10 +392,148 @@ class Inicio extends BaseController
             'telefonoVeterinario' => $this->request->getPost('telefonoVeterinario'),
         ];
         if($veterinarioModel->save($data)){
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/veterinarios')->with('success', 'Veterinario registrado con exito!');
+            return redirect()->to(substr(base_url(), 0, -17).'inicio/veterinarios')->with('success', 'Veterinario registrado con exito!');
         } else{
-            return redirect()->to(substr(base_url(), 0, -17).'public/index.php/inicio/veterinarios')->with('error', 'Ocurrio un error al registrar al veterinario, intente de nuevo mas tarde.');
+            return redirect()->to(substr(base_url(), 0, -17).'inicio/veterinarios')->with('error', 'Ocurrio un error al registrar al veterinario, intente de nuevo mas tarde.');
         }
     }
-    
+
+    public function finalizarRelacion($idRel=null){
+        helper(['form', 'SpanishErrors_helper']);
+        $post=$this->request->getPost();
+        if(empty($post)){
+            return view("finalizarRelacionView",["idRel"=>$idRel]);
+        }else{
+            $post=$this->request->getPost(["motivoFinalRel","fechaFinalRel","idFinalRel"]);
+            $rules=[
+                "fechaFinalRel"=>"required|valid_date"
+            ];
+            $validacion=service("validation");
+            $validacion->setRules($rules,spanishErrorMessages($rules));
+            if(!$validacion->withRequest($this->request)->run()){
+                return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->withInput()->with('errors', $validacion->getErrors());
+            }
+            try{
+                $relAmoMasc=new AmoMascotaModel();
+                if(!$relAmoMasc->update($post["idFinalRel"],["fechaFinAmoMascota"=>$post["fechaFinalRel"]])){
+                    $relAmoMasc=null;
+                    return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Ocurrio un error al intentar finalizar la relacion");
+                }
+            }catch(Error $e){
+                return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Ocurrio un error al intentar finalizar la relacion");
+            }
+            if($post["motivoFinalRel"]=="Fallecimiento"){
+                try{
+                    $idMascota=$relAmoMasc->select("idMascota")->find($post["idFinalRel"]);
+                    $relAmoMasc=null;
+                }catch(Error $e){
+                    return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Relacion finalizada con exito.<br>No se pudo modificar la fecha de defuncion de la mascota.");
+                }
+                if(isset($idMascota)){
+                    if(!empty($idMascota)){
+                        try{
+                            $mascota=new MascotaModel();
+                            if(!$mascota->update($idMascota["idMascota"],["fechaDefuncionMascota"=>$post["fechaFinalRel"]])){
+                                $mascota=null;
+                                return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Relacion finalizada con exito.<br>No se pudo modificar la fecha de defuncion de la mascota.");
+                            }
+                            $mascota=null;
+                        }catch(Error $e){
+                            return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Relacion finalizada con exito.<br>No se pudo modificar la fecha de defuncion de la mascota.");
+                        }
+                    }else{
+                        return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Relacion finalizada con exito.<br>No se pudo modificar la fecha de defuncion de la mascota.");
+                    }
+                }else{
+                    return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Relacion finalizada con exito.<br>No se pudo modificar la fecha de defuncion de la mascota.");
+                }
+            }
+            return redirect()->to(base_url()."inicio")->with("success","Relacion finalizada con exito");
+        }
+    }
+
+    public function newRelacionMascotaAmo($idMascota=null){
+        helper(['form', 'SpanishErrors_helper']);
+        $post=$this->request->getPost();
+        if(empty($post)){
+            try{
+                $amo=new AmoModel();
+                $amos=$amo->getAllAmosList();
+            }catch(Error $e){
+                return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error al intentar crear la relacion");
+            }
+            $data=[
+                "AmosDisponibles"=>$amos,
+                "idMascotaNewRelacion"=>$idMascota
+            ];
+            return view("newRelacionView",$data);
+        }else{
+            $rules=[
+                "fechaNewRel"=>"required|valid_date",
+                "amoNewRelacion"=>"required"
+            ];
+            $validacion=service("validation");
+            $validacion->setRules($rules,spanishErrorMessages($rules));
+            if(!$validacion->withRequest($this->request)->run()){
+                return redirect()->to(base_url()."inicio/new_relacion_mascota_amo/".$post["idNewRel"])->withInput()->with('errors', $validacion->getErrors());
+            }
+            $sqlIn=[
+                "fechaInicioAmoMascota"=>$post["fechaNewRel"],
+                "idAmo"=>$post["amoNewRelacion"],
+                "idMascota"=>$post["idNewRel"]
+            ];
+            try{
+                $relAmoMasc=new AmoMascotaModel();
+                if(!$relAmoMasc->insert($sqlIn)){
+                    $relAmoMasc=null;
+                    return redirect()->to(base_url()."inicio/new_relacion_mascota_amo/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
+                }
+                return redirect()->to(base_url()."inicio")->with("success","Relacion creada con exito");
+            }catch(Error $e){
+                return redirect()->to(base_url()."inicio/new_relacion_mascota_amo/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
+            }
+        }
+    }    
+    public function newRelacionAmoMascota($idAmo=null){
+        helper(['form', 'SpanishErrors_helper']);
+        $post=$this->request->getPost();
+        if(empty($post)){
+            try{
+                $mascota=new MascotaModel();
+                $mascotas=$mascota->getAllMascotasVivasList();
+            }catch(Error $e){
+                return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error al intentar crear la relacion");
+            }
+            $data=[
+                "MascotasDisponibles"=>$mascotas,
+                "idAmoNewRelacion"=>$idAmo
+            ];
+            return view("newRelacionView",$data);
+        }else{
+            $rules=[
+                "fechaNewRel"=>"required|valid_date",
+                "mascotaNewRelacion"=>"required"
+            ];
+            $validacion=service("validation");
+            $validacion->setRules($rules,spanishErrorMessages($rules));
+            if(!$validacion->withRequest($this->request)->run()){
+                return redirect()->to(base_url()."inicio/new_relacion_amo_mascota/".$post["idNewRel"])->withInput()->with('errors', $validacion->getErrors());
+            }
+            $sqlIn=[
+                "fechaInicioAmoMascota"=>$post["fechaNewRel"],
+                "idAmo"=>$post["idNewRel"],
+                "idMascota"=>$post["mascotaNewRelacion"]
+            ];
+            try{
+                $relAmoMasc=new AmoMascotaModel();
+                if(!$relAmoMasc->insert($sqlIn)){
+                    $relAmoMasc=null;
+                    return redirect()->to(base_url()."inicio/new_relacion_amo_mascota/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
+                }
+                return redirect()->to(base_url()."inicio")->with("success","Relacion creada con exito");
+            }catch(Error $e){
+                return redirect()->to(base_url()."inicio/new_relacion_amo_mascota/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
+            }
+        }
+    }    
 }
