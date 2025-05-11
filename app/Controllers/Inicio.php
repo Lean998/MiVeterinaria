@@ -321,24 +321,60 @@ class Inicio extends BaseController
             'razaMascota' => 'required|min_length[4]|max_length[30]|valid_alpha_space[razaMascota]',
             'edadMascota' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
         ];
+        $conAmo=$this->request->getPost("conAmo");
+        if(isset($conAmo)){
+            $rules["conNombreAmo"]="required|min_length[5]|max_length[30]|valid_alpha_space[nombreAmo]";
+            $rules["conApellidoAmo"]="required|min_length[4]|max_length[30]|valid_alpha_space[apellidoAmo]";
+            $rules["conTelefonoAmo"]="required|telefono_valido[telefonoAmo]";
+            $rules["conFechaNewRelMA"]="required|valid_date";
+        }
         $validacion = service('validation');
         $validacion->setRules($rules,spanishErrorMessages($rules));
         if (!$validacion->withRequest($this->request)->run()) {
             return redirect()->to(base_url().'inicio/mascotas')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
-
-        $mascotaModel = new MascotaModel();
-        $data = [
-            'nombreMascota' => $this->request->getPost('nombreMascota'),
-            'especieMascota' => $this->request->getPost('especieMascota'),
-            'razaMascota' => $this->request->getPost('razaMascota'),
-            'edadMascota' => $this->request->getPost('edadMascota'),
-            'fechaAltaMascota' => Time::now()->toDateTimeString(),
-        ];
-        if($mascotaModel->save($data)){
-            return redirect()->to(base_url().'inicio/mascotas')->with('success', 'Mascota registrada con exito!');
-        } else{
-            return redirect()->to(base_url().'inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
+        try{
+            $mascotaModel = new MascotaModel();
+            $data = [
+                'nombreMascota' => $this->request->getPost('nombreMascota'),
+                'especieMascota' => $this->request->getPost('especieMascota'),
+                'razaMascota' => $this->request->getPost('razaMascota'),
+                'edadMascota' => $this->request->getPost('edadMascota'),
+                'fechaAltaMascota' => Time::now()->toDateTimeString(),
+            ];
+            $idMascota=$mascotaModel->insert($data,true);
+            if($idMascota){
+                if(isset($conAmo)){
+                    $amosModel = new AmoModel();
+                    $data = [
+                        'nombreAmo' => $this->request->getPost('conNombreAmo'),
+                        'apellidoAmo' => $this->request->getPost('conApellidoAmo'),
+                        'telefonoAmo' => $this->request->getPost('conTelefonoAmo'),
+                        'fechaAltaAmo' => Time::now()->toDateTimeString(),
+                    ];
+                    $idAmo=$amosModel->insert($data,true);
+                    if($idAmo){
+                        $relAmoMasc=new AmoMascotaModel();
+                        $data = [
+                            'idAmo' => $idAmo,
+                            'idMascota' => $idMascota,
+                            'fechaInicioAmoMascota' => $this->request->getPost('conFechaNewRelMA'),
+                        ];
+                        if(!$relAmoMasc->insert($data)){
+                            $relAmoMasc=null;
+                            return redirect()->to(base_url()."inicio/mascotas")->with("error","Mascota y Amo registrados con exito<br>La relacion entre Mascota y Amo no se pudo crear");
+                        }
+                        return redirect()->to(base_url()."inicio/mascotas")->with("success","Mascota, Amo y su relacion han sido registrados con exito");
+                    }else{
+                        return redirect()->to(base_url()."inicio/mascotas")->with("error","Mascota registrada con exito<br>El Amo y la relacion entre Mascota y Amo no se pudieron crear");
+                    }
+                }
+                return redirect()->to(base_url().'inicio/mascotas')->with('success', 'Mascota registrada con exito!');
+            } else{
+                return redirect()->to(base_url().'inicio/mascotas')->with('error', 'Ocurrio un error al registrar la mascota, intente de nuevo mas tarde.');
+            }
+        }catch(Error $e){
+            return redirect()->to(base_url().'inicio')->with('error', 'Ocurrio un error inesperado. Estamos trabajando en ello.');
         }
     }
 
@@ -349,23 +385,61 @@ class Inicio extends BaseController
             'apellidoAmo' => 'required|min_length[4]|max_length[30]|valid_alpha_space[apellidoAmo]',
             'telefonoAmo' => 'required|telefono_valido[telefonoAmo]',
         ];
+        $conMascota=$this->request->getPost("conMascota");
+        if(isset($conMascota)){
+            $rules['conNombreMascota'] = 'required|min_length[4]|max_length[255]|valid_alpha_space[nombreMascota]';
+            $rules['conEspecieMascota'] = 'required|min_length[4]|max_length[30]|valid_alpha_space[especieMascota]';
+            $rules['conRazaMascota'] = 'required|min_length[4]|max_length[30]|valid_alpha_space[razaMascota]';
+            $rules['conEdadMascota'] = 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
+            $rules["conFechaNewRelAM"]="required|valid_date";
+        }
         $validacion = service('validation');
         $validacion->setRules($rules,spanishErrorMessages($rules));
         if (!$validacion->withRequest($this->request)->run()) {
             return redirect()->to(base_url().'inicio/amos')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
-
-        $amosModel = new AmoModel();
-        $data = [
-            'nombreAmo' => $this->request->getPost('nombreAmo'),
-            'apellidoAmo' => $this->request->getPost('apellidoAmo'),
-            'telefonoAmo' => $this->request->getPost('telefonoAmo'),
-            'fechaAltaAmo' => Time::now()->toDateTimeString(),
-        ];
-        if($amosModel->save($data)){
-            return redirect()->to(substr(base_url(), 0, -17).'inicio/amos')->with('success', 'Amo registrado con exito!');
-        } else{
-            return redirect()->to(substr(base_url(), 0, -17).'inicio/amos')->with('error', 'Ocurrio un error al registrar el amo, intente de nuevo mas tarde.');
+        try{
+            $amosModel = new AmoModel();
+            $data = [
+                'nombreAmo' => $this->request->getPost('nombreAmo'),
+                'apellidoAmo' => $this->request->getPost('apellidoAmo'),
+                'telefonoAmo' => $this->request->getPost('telefonoAmo'),
+                'fechaAltaAmo' => Time::now()->toDateTimeString(),
+            ];
+            $idAmo=$amosModel->insert($data,true);
+            if($idAmo){
+                if(isset($conMascota)){
+                    $mascotaModel = new MascotaModel();
+                    $data = [
+                        'nombreMascota' => $this->request->getPost('conNombreMascota'),
+                        'especieMascota' => $this->request->getPost('conEspecieMascota'),
+                        'razaMascota' => $this->request->getPost('conRazaMascota'),
+                        'edadMascota' => $this->request->getPost('conEdadMascota'),
+                        'fechaAltaMascota' => Time::now()->toDateTimeString(),
+                    ];
+                    $idMascota=$mascotaModel->insert($data,true);
+                    if($idMascota){
+                        $relAmoMasc=new AmoMascotaModel();
+                        $data = [
+                            'idAmo' => $idAmo,
+                            'idMascota' => $idMascota,
+                            'fechaInicioAmoMascota' => $this->request->getPost('conFechaNewRelAM'),
+                        ];
+                        if(!$relAmoMasc->insert($data)){
+                            $relAmoMasc=null;
+                            return redirect()->to(base_url()."inicio/amos")->with("error","Amo y Mascota registrados con exito<br>La relacion entre Amo y Mascota no se pudo crear");
+                        }
+                        return redirect()->to(base_url()."inicio/amos")->with("success","Amo, Mascota y su relacion han sido registrados con exito");
+                    }else{
+                        return redirect()->to(base_url()."inicio/amos")->with("error","Amo registrado con exito<br>La mascota y la relacion entre Amo y Mascota no se pudieron crear");
+                    }
+                }
+                return redirect()->to(base_url().'inicio/amos')->with('success', 'Amo registrado con exito!');
+            } else{
+                return redirect()->to(base_url().'inicio/amos')->with('error', 'Ocurrio un error al registrar el amo, intente de nuevo mas tarde.');
+            }
+        }catch(Error $e){
+            return redirect()->to(base_url().'inicio')->with('error', 'Ocurrio un error inesperado. Estamos trabajando en ello.');
         }
     }
 

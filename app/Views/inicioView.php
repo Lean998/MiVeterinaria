@@ -95,7 +95,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">    
-                <form action="<?=base_url()?>inicio/alta_mascotas " method="post">
+                <form class="d-flex flex-wrap" action="<?=base_url()?>inicio/alta_mascotas " method="post">
+                    <div class="row col-6">
+                        <div>
+                            <h5>Mascota</h5>
+                        </div>
                         <div class="row mb-3">
                             <div class="col-12 mb-3">
                                 <label for="nombreMascota" class="form-label">Nombre</label>
@@ -129,10 +133,52 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="d-grid d-md-flex justify-content-md-end">
-                        <button type="submit" class="btn btn-primary">Guardar Mascota</button>
+                    </div>
+                    <div class="row col-6">
+                        <div>
+                            <label for="conAmo">Adjuntar nuevo amo?</label>
+                            <input type="checkbox" name="conAmo" id="conAmo" value="nuevo" onchange="mostrarNuevoAmo(event)" <?php if(old('conAmo'))echo "checked";?>>
                         </div>
+                        <div class="d-none">
+                            <div class="row mb-3">
+                                <div class="col-12 mb-3">
+                                    <label for="conNombreAmo" class="form-label">Nombre</label>
+                                    <input type="text"class="form-control <?= session('errors.conNombreAmo') ? 'is-invalid' : '' ?>" value="<?= old('conNombreAmo') ?>" id="conNombreAmo" name="conNombreAmo" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conNombreAmo","El nombre",session('errors.conNombreAmo')) ?? '' ?>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="conApellidoAmo" class="form-label">Apellido</label>
+                                    <input type="text" class="form-control <?= session('errors.conApellidoAmo') ? 'is-invalid' : '' ?>" value="<?= old('conApellidoAmo') ?>" id="conApellidoAmo" name="conApellidoAmo" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conApellidoAmo","El apellido",session('errors.conApellidoAmo')) ?? '' ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 mb-3">
+                                    <label for="conTelefonoAmo" class="form-label">Telefono</label>
+                                    <input type="text" class="form-control <?= session('errors.conTelefonoAmo') ? 'is-invalid' : '' ?>" value="<?= old('conTelefonoAmo') ?>" id="conTelefonoAmo" name="conTelefonoAmo" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conTelefonoAmo","El telefono",session('errors.conTelefonoAmo')) ?? '' ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-auto d-flex flex-column align-items-center justify-content-around mb-4">
+                                <label for="conFechaNewRelMA" class="form-label">Inicio de la relacion</label>
+                                <input type="datetime-local" class="form-control <?= session('errors.conFechaNewRelMA') ? 'is-invalid' : '' ?>" value="<?= old('conFechaNewRelMA') ?>" id="conFechaNewRelMA" name="conFechaNewRelMA" max="<?php date_default_timezone_set("America/Argentina/Buenos_Aires"); echo date("Y-m-d H:i");?>" >
+                                <div class="col-10 invalid-feedback">
+                                    <?= str_replace("conFechaNewRelMA","La fecha de inicio de la relacion",session('errors.conFechaNewRelMA')) ?? '' ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">Guardar Mascota</button>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -148,7 +194,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">    
-                <form action="<?=base_url()?>inicio/alta_amos " method="post">
+                <form class="d-flex flex-wrap" action="<?=base_url()?>inicio/alta_amos " method="post">
+                    <div class="row col-6">
+                        <div>
+                            <h5>Amo</h5>
+                        </div>
                         <div class="row mb-3">
                             <div class="col-12 mb-3">
                                 <label for="nombreAmo" class="form-label">Nombre</label>
@@ -175,7 +225,56 @@
                                 </div>
                             </div>
                         </div>
-                        
+                    </div>
+                    <div class="row col-6">
+                        <div>
+                            <label for="conMascota">Adjuntar nueva mascota?</label>
+                            <input type="checkbox" name="conMascota" id="conMascota" value="nuevo" onchange="mostrarNuevaMascota(event)" <?php if(old('conMascota'))echo "checked";?>>
+                        </div>
+                        <div class="d-none">
+                            <div class="row mb-3">
+                                <div class="col-12 mb-3">
+                                    <label for="conNombreMascota" class="form-label">Nombre</label>
+                                    <input type="text"class="form-control <?= session('errors.conNombreMascota') ? 'is-invalid' : '' ?>" value="<?= old('conNombreMascota') ?>" id="conNombreMascota" name="conNombreMascota" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conNombreMascota","El nombre",session('errors.conNombreMascota')) ?? '' ?>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="conEspecieMascota" class="form-label">Especie</label>
+                                    <input type="text" class="form-control <?= session('errors.conEspecieMascota') ? 'is-invalid' : '' ?>" value="<?= old('conEspecieMascota') ?>" id="conEspecieMascota" name="conEspecieMascota" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conEspecieMascota","La especie",session('errors.conEspecieMascota')) ?? '' ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 mb-3">
+                                    <label for="conRazaMascota" class="form-label">Raza</label>
+                                    <input type="text" class="form-control <?= session('errors.conRazaMascota') ? 'is-invalid' : '' ?>" value="<?= old('conRazaMascota') ?>" id="conRazaMascota" name="conRazaMascota" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conRazaMascota","La raza",session('errors.conRazaMascota')) ?? '' ?>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="conEdadMascota" class="form-label">Edad</label>
+                                    <input type="number" class="form-control <?= session('errors.conEdadMascota') ? 'is-invalid' : '' ?>" value="<?= old('conEdadMascota') ?>" id="conEdadMascota" name="conEdadMascota" min="0" >
+                                    <div class="invalid-feedback">
+                                        <?= str_replace("conEdadMascota","La edad",session('errors.conEdadMascota')) ?? '' ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-auto d-flex flex-column align-items-center justify-content-around mb-4">
+                                <label for="conFechaNewRelAM" class="form-label">Inicio de la relacion</label>
+                                <input type="datetime-local" class="form-control <?= session('errors.conFechaNewRelAM') ? 'is-invalid' : '' ?>" value="<?= old('conFechaNewRelAM') ?>" id="conFechaNewRelAM" name="conFechaNewRelAM" max="<?php date_default_timezone_set("America/Argentina/Buenos_Aires"); echo date("Y-m-d H:i");?>" >
+                                <div class="col-10 invalid-feedback">
+                                    <?= str_replace("conFechaNewRelAM","La fecha de inicio de la relacion",session('errors.conFechaNewRelAM')) ?? '' ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                         <div class="d-grid d-md-flex justify-content-md-end">
                         <button type="submit" class="btn btn-primary">Guardar Amo</button>
                         </div>
@@ -247,5 +346,32 @@
         <?php elseif(session('error')): ?>
             mostrarMensaje('mensaje-success', <?= json_encode(session('error')) ?>, 'danger');
         <?php endif ?>
-    </script>
+        window.addEventListener("load",()=>{
+            var conAmo=document.querySelector("#conAmo");
+            if(conAmo.checked){
+                conAmo.parentElement.nextElementSibling.classList.remove("d-none");
+            }
+            var conAmo=document.querySelector("#conMascota");
+            if(conAmo.checked){
+                conAmo.parentElement.nextElementSibling.classList.remove("d-none");
+            }
+        });
+
+        function mostrarNuevoAmo(e){
+            if(e.target.parentElement.nextElementSibling.classList.length>0){
+                e.target.parentElement.nextElementSibling.classList.remove("d-none");
+            }else{
+                e.target.parentElement.nextElementSibling.classList.add("d-none");
+            }
+            console.log(e.target.nextElementSibling.classList);
+        }
+        function mostrarNuevaMascota(e){
+            if(e.target.parentElement.nextElementSibling.classList.length>0){
+                e.target.parentElement.nextElementSibling.classList.remove("d-none");
+            }else{
+                e.target.parentElement.nextElementSibling.classList.add("d-none");
+            }
+            console.log(e.target.nextElementSibling.classList);
+        }
+</script>
 </html>
