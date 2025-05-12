@@ -173,6 +173,7 @@ class Inicio extends BaseController
             }
             $data['table'] = $tabla;
             $data["tipoTabla"]="AmoMascotas";
+            $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_amo_mascota/".$amo).'">Agregar Relacion Amo-Mascota</a>';
             return view('inicioView', $data);
         }
     }
@@ -244,6 +245,7 @@ class Inicio extends BaseController
             $data['table'] = $tabla;
             if(!$validNew)$data["invalidNew"]=true;
             $data["tipoTabla"]="MascotaAmos";
+            $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_mascota_amo/".$mascota).'">Agregar Relacion Mascota-Amo</a>';
             return view('inicioView', $data);
         }
     }

@@ -62,14 +62,13 @@
                 <div class="col-12 tabla d-flex align-items-start justify-content-center">
                     <?php if(isset($table)){echo "<div class='d-flex flex-column align-content-start'>";}
                     if(isset($tipoTabla)&&!isset($invalidNew)){
-                        echo "<div class='agregarButton'>
-                                <button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregar$tipoTabla'>";
-                                 switch($tipoTabla){
-                                     case "Mascotas": echo "Agregar Mascota";break;
-                                     case "Amos": echo "Agregar Amo";break; 
-                                     case "Veterinarios": echo "Agregar Veterinario";break; 
-                                     case "AmoMascotas": echo "Agregar Relacion Amo-Mascota";break; 
-                                     case "MascotaAmos": echo "Agregar Relacion Mascota-Amo";
+                        echo "<div class='agregarButton'>";
+                        switch($tipoTabla){
+                            case "Mascotas": "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarsMascota'>Agregar Mascota";break;
+                                     case "Amos": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarsAmos'>Agregar Amo";break; 
+                                     case "Veterinarios": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarVeterinarios'>Agregar Veterinario";break; 
+                                     case "AmoMascotas": echo "<button class='btn p-1 m-2'>".$newRelAmoMasc;break; 
+                                     case "MascotaAmos": echo "<button class='btn p-1 m-2'>".$newRelMascAmo;
                                  } 
                         echo "</button></div>";
                     }
