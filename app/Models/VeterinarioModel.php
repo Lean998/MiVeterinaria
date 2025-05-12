@@ -16,4 +16,7 @@ class VeterinarioModel extends Model{
     public function getAllVeterinarios(){
         return $this->select("nombreVeterinario, apellidoVeterinario, especialidadVeterinario, telefonoVeterinario, fechaIngresoVeterinario, fechaEgresoVeterinario")->findAll();
     }
+    public function getVeterinario($id){
+        return $this->select("idVeterinario")->find($id);
+    }
 }

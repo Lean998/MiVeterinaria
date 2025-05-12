@@ -20,6 +20,9 @@ class amoMascotaModel extends Model{
         ->findAll();
     }
     public function getAllIdAmoMascotas($amoId){
+        return $this->select("idMascota AS id")->where("idAmo=".$amoId)->findAll();
+    }
+    public function getAllIdAmoMascotasRel($amoId){
         return $this->select("idAmoMascota AS id")->where("idAmo=".$amoId)->findAll();
     }
     public function getAllMascotaAmos($mascotaId){
@@ -29,6 +32,15 @@ class amoMascotaModel extends Model{
         ->findAll();
     }
     public function getAllIdMascotaAmos($mascotaId){
+        return $this->select("idAmo AS id")->where("idMascota=".$mascotaId)->findAll();
+    }
+    public function getAllIdMascotaAmosRel($mascotaId){
         return $this->select("idAmoMascota AS id")->where("idMascota=".$mascotaId)->findAll();
+    }
+    public function eliminarRelacionesMascota($idMascota){
+        return $this->where("idMascota=".$idMascota)->delete();
+    }
+    public function eliminarRelacionesAmo($idAmo){
+        return $this->where("idMascota=".$idAmo)->delete();
     }
 }

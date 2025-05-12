@@ -31,4 +31,8 @@ class MascotaModel extends Model{
     public function getAllMascotasList(){
         return $this->select("idMascota, nombreMascota")->findAll();
     }
+
+    public function getMascota($id){
+        return $this->select("idMascota")->find($id);
+    }
 }

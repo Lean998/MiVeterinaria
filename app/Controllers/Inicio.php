@@ -17,7 +17,7 @@ class Inicio extends BaseController
         return view('inicioView');
     }
     
-    private function generarTabla($arreglo,$tabla,$nColumnas,&$validNew,$ids=null){
+    private function generarTabla($arreglo,$tabla,$nColumnas,&$validNew,$ids=null,$idsRel=null){
         $i=0;
         if($ids!=null){
             $tabla.="<th style='width: 4.3rem;'></th>";
@@ -33,9 +33,9 @@ class Inicio extends BaseController
             }
             if($ids!=null)if(!empty($ids)){
                 if(isset($valor["nombreMascota"])){$metodoModificar="modificar_mascota";$metodoEliminar="eliminar_mascota";}
-                if(isset($valor["nombreAmo"])){$metodoModificar="modificar_autor";$metodoEliminar="eliminar_autor";}
+                if(isset($valor["nombreAmo"])){$metodoModificar="modificar_amo";$metodoEliminar="eliminar_amo";}
                 if(isset($valor["nombreVeterinario"])){$metodoModificar="modificar_veterinario";$metodoEliminar="eliminar_veterinario";}
-                if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="finalizar_relacion";$validNew=false;}
+                if($idsRel!=null)if(!empty($idsRel))if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="finalizar_relacion";$validNew=false;}
                 $tabla.='<td><div class="dropdown options">
                             <button class="btn dropdown-toggle dark btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
                             <ul class="dropdown-menu dark">';
@@ -49,7 +49,7 @@ class Inicio extends BaseController
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoModificar."/".$ids[$i]["id"]).'">Modificar</a>
                                 </li>';
                 if(isset($metodoFinalizar))$tabla.='<li>
-                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoFinalizar."/".$ids[$i]["id"]).'">Finalizar</a>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoFinalizar."/".$idsRel[$i]["id"]).'">Finalizar</a>
                                 </li>';
                 if(isset($metodoEliminar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoEliminar."/".$ids[$i]["id"]).'">Eliminar</a>
@@ -144,6 +144,7 @@ class Inicio extends BaseController
             try{
                 $mascotas = $amoMascotaModel->getAllAmoMascotas($amo);
                 $idMascotas= $amoMascotaModel->getAllIdAmoMascotas($amo);
+                $idRel=$amoMascotaModel->getAllIdAmoMascotasRel($amo);
             } catch(Error $e){
                 return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
@@ -157,7 +158,7 @@ class Inicio extends BaseController
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
-            if(isset($mascotas) && isset($idMascotas)){
+            if(isset($mascotas) && isset($idMascotas) && isset($idRel)){
                 for($i=0; $i<sizeof($mascotas); $i++){
                     $mascotas[$i]["fechaInicioAmoMascota"]=substr($mascotas[$i]["fechaInicioAmoMascota"],0,-9);
                     if($mascotas[$i]["fechaFinAmoMascota"]!=null){
@@ -166,7 +167,7 @@ class Inicio extends BaseController
                         $mascotas[$i]["fechaFinAmoMascota"]="";
                     }
                 }
-                $tabla=$this->generarTabla($mascotas,$tabla,6,$validNew,$idMascotas);
+                $tabla=$this->generarTabla($mascotas,$tabla,6,$validNew,$idMascotas,$idRel);
             }else{
                 $tabla=$this->generarTabla([],$tabla,6,$validNew);
             }
@@ -214,6 +215,7 @@ class Inicio extends BaseController
             try{
                 $amos = $amoMascotaModel->getAllMascotaAmos($mascota);
                 $idAmos = $amoMascotaModel->getAllIdMascotaAmos($mascota);
+                $idRel=$amoMascotaModel->getAllIdMascotaAmosRel($mascota);
             } catch(Error $e){
                 return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
@@ -235,7 +237,7 @@ class Inicio extends BaseController
                         $amos[$i]["fechaFinAmoMascota"]="";
                     }
                 }
-                $tabla=$this->generarTabla($amos,$tabla,5,$validNew,$idAmos);
+                $tabla=$this->generarTabla($amos,$tabla,5,$validNew,$idAmos,$idRel);
             }else{
                 $tabla=$this->generarTabla([],$tabla,5,$validNew);
             }
@@ -284,7 +286,7 @@ class Inicio extends BaseController
             $veterinarios=$veterinariosModel->getAllVeterinarios();
             $idVeterinados=$veterinariosModel->select("idVeterinario AS id")->findAll();
         } catch(Error $e){
-            return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
+            return redirect()->to(base_url()."inicio")->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }
         $tabla = '
         <table>
@@ -466,9 +468,9 @@ class Inicio extends BaseController
             'telefonoVeterinario' => $this->request->getPost('telefonoVeterinario'),
         ];
         if($veterinarioModel->save($data)){
-            return redirect()->to(substr(base_url(), 0, -17).'inicio/veterinarios')->with('success', 'Veterinario registrado con exito!');
+            return redirect()->to(base_url().'inicio/veterinarios')->with('success', 'Veterinario registrado con exito!');
         } else{
-            return redirect()->to(substr(base_url(), 0, -17).'inicio/veterinarios')->with('error', 'Ocurrio un error al registrar al veterinario, intente de nuevo mas tarde.');
+            return redirect()->to(base_url().'inicio/veterinarios')->with('error', 'Ocurrio un error al registrar al veterinario, intente de nuevo mas tarde.');
         }
     }
 
@@ -610,4 +612,93 @@ class Inicio extends BaseController
             }
         }
     }    
+
+    public function eliminarMascota($id){
+        try{
+            if(isset($id)){
+                $mascotaModel=new MascotaModel();
+                $mascota=$mascotaModel->getMascota($id);
+                if(isset($mascota)){if(!empty($mascota)){
+                    return view("eliminarView",["id"=>$id,"tipo"=>"mascota"]);
+                }else return redirect()->to(base_url()."inicio/mascotas")->with("error","La mascota no se encuentra en la tabla");
+                }else return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error al momento de intentar obtener la mascota");
+            }
+            return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }catch(Error $e){
+            return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }
+    }
+    public function eliminarAmo($id){
+        try{
+            if(isset($id)){
+                $amoModel=new AmoModel();
+                $amo=$amoModel->getAmo($id);
+                if(isset($amo)){if(!empty($amo)){
+                    return view("eliminarView",["id"=>$id,"tipo"=>"amo"]);
+                }else return redirect()->to(base_url()."inicio/amos")->with("error","El amo no se encuentra en la tabla");
+                }else return redirect()->to(base_url()."inicio/amos")->with("error","Ocurrio un error al momento de intentar obtener al amo");
+            }
+            return redirect()->to(base_url()."inicio/amos")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }catch(Error $e){
+            return redirect()->to(base_url()."inicio/amos")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }
+    }
+    public function eliminarVeterinario($id){
+        try{
+            if(isset($id)){
+                $veterinarioModel=new VeterinarioModel();
+                $veterinario=$veterinarioModel->getVeterinario($id);
+                if(isset($veterinario)){if(!empty($veterinario)){
+                    return view("eliminarView",["id"=>$id,"tipo"=>"veterinario"]);
+                }else return redirect()->to(base_url()."inicio/veterinarios")->with("error","El veterinario no se encuentra en la tabla");
+                }else return redirect()->to(base_url()."inicio/veterinarios")->with("error","Ocurrio un error al momento de intentar obtener al veterinario");
+            }
+            return redirect()->to(base_url()."inicio/veterinarios")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }catch(Error $e){
+            return redirect()->to(base_url()."inicio/veterinarios")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }
+    }
+
+    public function eliminar(){
+        try{
+            $post=$this->request->getPost(["id"]);
+            //var_dump($post);exit();
+            if(isset($post["id"])){
+                $tipo=$this->request->getPost(["tipo"]);
+                if(isset($tipo["tipo"])){
+                    if($tipo["tipo"]=="mascota"){
+                        $relAM=new AmoMascotaModel();
+                        if($relAM->eliminarRelacionesMascota($post["id"])){
+                            $mascotaModel=new MascotaModel();
+                            if($mascotaModel->delete($post["id"])){
+                                return redirect()->to(base_url()."inicio/mascotas")->with("success","La mascota y sus relaciones han sido eliminadas con exito.");
+                            }
+                            return redirect()->to(base_url()."inicio/mascotas")->with("error","Las relaciones de la mascota han sido borradas<br>Ocurrio un error al intentar eliminar a la mascota");
+                        }
+                        return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error al intentar eliminar a la mascota");
+                    }elseif($tipo["tipo"]=="amo"){
+                        $relAM=new AmoMascotaModel();
+                        if($relAM->eliminarRelacionesAmo($post["id"])){
+                            $amoModel=new AmoModel();
+                            if($amoModel->delete($post["id"])){
+                                return redirect()->to(base_url()."inicio/amos")->with("success","El amo y sus relaciones han sido eliminadas con exito.");
+                            }
+                            return redirect()->to(base_url()."inicio/amos")->with("error","Las relaciones del amo han sido borradas<br>Ocurrio un error al intentar eliminar al amo");
+                        }
+                        return redirect()->to(base_url()."inicio/amos")->with("error","Ocurrio un error al intentar eliminar al amo");
+                    }elseif($tipo["tipo"]=="veterinario"){
+                        $veterinarioModel=new VeterinarioModel();
+                        if($veterinarioModel->delete($post["id"])){
+                            return redirect()->to(base_url()."inicio/veterinarios")->with("success","El veterinario a sido eliminado con exito.");
+                        }
+                        return redirect()->to(base_url()."inicio/veterinarios")->with("error","Ocurrio un error al intentar eliminar al veterinario");
+                    }
+                }
+                return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+            }
+            return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }catch(Error $e){
+            return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }
+    }
 }
