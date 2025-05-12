@@ -61,16 +61,20 @@
             <div class="col-12 d-flex flex-column align-items-center">
                 <div class="col-12 tabla d-flex align-items-start justify-content-center">
                     <?php if(isset($table)){echo "<div class='d-flex flex-column align-content-start'>";}
-                    if(isset($tipoTabla)&&!isset($invalidNew)){
+                    if(isset($tipoTabla)){
                         echo "<div class='agregarButton'>";
                         switch($tipoTabla){
-                            case "Mascotas": "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarsMascota'>Agregar Mascota";break;
-                                     case "Amos": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarsAmos'>Agregar Amo";break; 
-                                     case "Veterinarios": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarVeterinarios'>Agregar Veterinario";break; 
-                                     case "AmoMascotas": echo "<button class='btn p-1 m-2'>".$newRelAmoMasc;break; 
-                                     case "MascotaAmos": echo "<button class='btn p-1 m-2'>".$newRelMascAmo;
-                                 } 
-                        echo "</button></div>";
+                            case "Mascotas": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarMascotas'>Agregar Mascota</button>";break;
+                            case "Amos": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarAmos'>Agregar Amo</button>";break; 
+                            case "Veterinarios": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarVeterinarios'>Agregar Veterinario</button>";break; 
+                            case "AmoMascotas": if(!isset($invalidNew)){
+                                                    echo "<button class='btn p-1 m-2'>".$newRelAmoMasc."</button>";
+                                                }break; 
+                            case "MascotaAmos": if(!isset($invalidNew)){
+                                                    echo "<button class='btn p-1 m-2'>".$newRelMascAmo."</button>";
+                                                }
+                        } 
+                        echo "</div>";
                     }
                     if(isset($table)){ 
                         echo $table."</div>";
