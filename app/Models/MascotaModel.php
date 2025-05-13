@@ -20,6 +20,10 @@ class MascotaModel extends Model{
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
+    public function getAllMascotas(){
+        return $this->select("mascotas.idMascota AS id, nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota, fechaDefuncionMascota")
+        ->findAll();
+    }
 
     public function getAllMascotasVivasList(){
         return $this->select("mascotas.idMascota, mascotas.nombreMascota")
@@ -34,5 +38,16 @@ class MascotaModel extends Model{
 
     public function getMascota($id){
         return $this->select("idMascota")->find($id);
+    }
+    public function getAllIdMascotasVivas(){
+        return $this->select("mascotas.idMascota AS id")
+        ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
+        ->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->groupBy("mascotas.idMascota")
+        ->findAll();
+    }
+    public function getAllIdMascotas(){
+        return $this->select("mascotas.idMascota AS id")
+        ->findAll();
     }
 }

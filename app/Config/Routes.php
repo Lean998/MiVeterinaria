@@ -8,6 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Inicio::index');
 $routes->get('/inicio', 'Inicio::index');
 $routes->get('/inicio/mascotas', 'Inicio::mascotas');
+$routes->get('/inicio/todas_mascotas', 'Inicio::todasMascotas');
 $routes->get('/inicio/amos', 'Inicio::amos');
 $routes->get('/inicio/veterinarios', 'Inicio::veterinarios');
 $routes->get('/inicio/amo_mascotas', 'Inicio::amoMascotas');
@@ -27,5 +28,7 @@ $routes->get('/inicio/eliminar_mascota/(:num)', 'Inicio::eliminarMascota/$1');
 $routes->get('/inicio/eliminar_amo/(:num)', 'Inicio::eliminarAmo/$1');
 $routes->get('/inicio/eliminar_veterinario/(:num)', 'Inicio::eliminarVeterinario/$1');
 $routes->post('/inicio/eliminar', 'Inicio::eliminar');
+$routes->get('/inicio/mascota_difunta/(:num)', 'Inicio::mascotaDifunta/$1');
+$routes->post('/inicio/mascota_difunta', 'Inicio::mascotaDifunta');
 
 $routes->get("/miveterinaria","MiVeterinariaDB::index");

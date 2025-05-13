@@ -39,9 +39,7 @@ header div ul li a{
 .divListaSelect{
     min-height: 13vh;
 }
-.agregarButton{
-    max-width: 10rem;
-}
+
 .agregarButton button:hover{
     border: solid 0.01rem black;
 }

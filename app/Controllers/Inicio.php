@@ -32,24 +32,28 @@ class Inicio extends BaseController
                 $tabla.='<td>'. $item.' </td>';
             }
             if($ids!=null)if(!empty($ids)){
-                if(isset($valor["nombreMascota"])){$metodoModificar="modificar_mascota";$metodoEliminar="eliminar_mascota";}
+                if(isset($valor["nombreMascota"])){$metodoModificar="modificar_mascota";$metodoEliminar="eliminar_mascota";$metodoDifunto="mascota_difunta";}
                 if(isset($valor["nombreAmo"])){$metodoModificar="modificar_amo";$metodoEliminar="eliminar_amo";}
+                if(isset($valor["fechaDefuncionMascota"])){if($valor["fechaDefuncionMascota"]!=""){$difunto=true;}}
                 if(isset($valor["nombreVeterinario"])){$metodoModificar="modificar_veterinario";$metodoEliminar="eliminar_veterinario";}
                 if($idsRel!=null)if(!empty($idsRel))if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="finalizar_relacion";$validNew=false;}
                 $tabla.='<td><div class="dropdown options">
                             <button class="btn dropdown-toggle dark btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
                             <ul class="dropdown-menu dark">';
-                if(isset($valor["nombreMascota"]) && isset($valor["fechaAltaMascota"]))$tabla.='<li>
+                if(isset($valor["nombreMascota"]) && isset($valor["fechaAltaMascota"]) && !isset($difunto))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_mascota_amo/".$ids[$i]["id"]).'">Nueva Relacion</a>
                                 </li>';
                 if(isset($valor["nombreAmo"]) && isset($valor["fechaAltaAmo"]))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_amo_mascota/".$ids[$i]["id"]).'">Nueva Relacion</a>
                                 </li>';
-                if(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"]))$tabla.='<li>
+                if(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"]) && !isset($difunto))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoModificar."/".$ids[$i]["id"]).'">Modificar</a>
                                 </li>';
                 if(isset($metodoFinalizar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoFinalizar."/".$idsRel[$i]["id"]).'">Finalizar</a>
+                                </li>';
+                if(isset($metodoDifunto) && !isset($difunto))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoDifunto."/".$ids[$i]["id"]).'">Dar de baja</a>
                                 </li>';
                 if(isset($metodoEliminar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/".$metodoEliminar."/".$ids[$i]["id"]).'">Eliminar</a>
@@ -78,7 +82,7 @@ class Inicio extends BaseController
         $mascotas=new MascotaModel();
         try{
             $mascotasVivas=$mascotas->getAllMascotasVivas();
-            $idMascotas=$mascotas->select("idMascota AS id")->findAll();
+            $idMascotas=$mascotas->getAllIdMascotasVivas();
         } catch(Error $e){
             return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }
@@ -98,6 +102,44 @@ class Inicio extends BaseController
             $tabla=$this->generarTabla($mascotasVivas,$tabla,5,$validNew,$idMascotas);
         }else{
             $tabla=$this->generarTabla([],$tabla,5,$validNew);
+        }
+        $data['table']=$tabla;
+        if(!$validNew)$data["invalidNew"]=true;
+        $data["tipoTabla"]="Mascotas";
+        return view('inicioView', $data);
+    }
+
+    public function todasMascotas(){
+        $validNew=true;
+        $mascotasModel=new MascotaModel();
+        try{
+            $mascotas=$mascotasModel->getAllMascotas();
+            $idMascotas=$mascotasModel->getAllIdMascotas();
+        } catch(Error $e){
+            return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
+        }
+        $tabla = '
+        <table>
+            <thead>
+                    <th>Nombre</th>
+                    <th>Edad</th>
+                    <th>Especie</th>
+                    <th>Raza</th>
+                    <th style="width: 9rem;">Fecha Alta</th>
+                    <th style="width: 10rem;">Fecha Defuncion</th>
+        ';
+        if(isset($mascotas) && isset($idMascotas)){
+            for($i=0; $i<sizeof($mascotas); $i++){
+                $mascotas[$i]["fechaAltaMascota"]=substr($mascotas[$i]["fechaAltaMascota"],0,-9);
+                if(!isset($mascotas[$i]["fechaDefuncionMascota"])){
+                    $mascotas[$i]["fechaDefuncionMascota"]="";
+                }else{
+                    $mascotas[$i]["fechaDefuncionMascota"]=substr($mascotas[$i]["fechaDefuncionMascota"],0,-9);
+                }
+            }
+            $tabla=$this->generarTabla($mascotas,$tabla,6,$validNew,$idMascotas);
+        }else{
+            $tabla=$this->generarTabla([],$tabla,6,$validNew);
         }
         $data['table']=$tabla;
         if(!$validNew)$data["invalidNew"]=true;
@@ -701,6 +743,42 @@ class Inicio extends BaseController
             return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
         }catch(Error $e){
             return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }
+    }
+
+    public function mascotaDifunta($id=null){
+        try{
+            if(isset($id)){
+                $mascotaModel=new MascotaModel();
+                $mascota=$mascotaModel->getMascota($id);
+                if(isset($mascota)){if(!empty($mascota)){
+                    return view("difuntoView",["id"=>$id]);
+                }else return redirect()->to(base_url()."inicio/mascotas")->with("error","La mascota no se encuentra en la tabla");
+                }else return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error al momento de intentar obtener la mascota");
+            }else{
+                $post=$this->request->getPost(["id"]);
+                if(isset($post["id"])){
+                    helper(['form', 'SpanishErrors_helper']);
+                    $rules=[
+                        "fechaDefuncion"=>"required|valid_date"
+                    ];
+                    $validacion=service("validation");
+                    $validacion->setRules($rules,spanishErrorMessages($rules));
+                    if(!$validacion->withRequest($this->request)->run()){
+                        return redirect()->to(base_url()."inicio/mascota_difunta/".$post["id"])->withInput()->with('errors', $validacion->getErrors());
+                    }
+                    $mascota=new MascotaModel();
+                    if(!$mascota->update($post["id"],["fechaDefuncionMascota"=>$this->request->getPost("fechaDefuncion")])){
+                        $mascota=null;
+                        return redirect()->to(base_url()."inicio/mascotas")->with("error","No se pudo modificar la fecha de defuncion de la mascota.");
+                    }
+                    $mascota=null;
+                    return redirect()->to(base_url()."inicio/mascotas")->with("success","La mascota ha sido declarada como difunta");
+                }
+            }
+            return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
+        }catch(Error $e){
+            return redirect()->to(base_url()."inicio/mascotas")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
         }
     }
 }
