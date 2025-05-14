@@ -5,6 +5,10 @@
                             $data=mascotas($datos["mascotasVivas"],$datos["idMascotas"]);
                             }
                             break;
+        case "TodasMascotas": if(isset($datos["todasMascotas"])&&isset($datos["idMascotas"])){
+                            $data=todasMascotas($datos["todasMascotas"],$datos["idMascotas"]);
+                            }
+                            break;
         case "Amos": if(isset($datos["amos"])&&isset($datos["idAmos"])){
                         $data=amos($datos["amos"],$datos["idAmos"]);
                         }
@@ -13,12 +17,20 @@
                                 $data=veterinarios($datos["veterinarios"],$datos["idVeterinarios"]);
                                 }
                                 break;
-        case "MascotaAmos": if(isset($datos["mascota"])){
+        case "MascotaAmos": if(isset($datos["mascota"])&&isset($datos["amos"])){
                                 $data=mascotaAmos($datos["mascota"],$datos["amos"],$datos["idAmos"],$datos["idRel"]);
+                            }elseif(isset($datos["mascota"])&&!isset($datos["amos"])){
+                                $data=mascotaAmos($datos["mascota"]);
+                            }elseif(!isset($datos["mascota"])){
+                                $data=mascotaAmos();
                             }
                             break;
-        case "AmoMascotas": if(isset($datos["amo"])){
+        case "AmoMascotas": if(isset($datos["amo"])&&isset($datos["mascotas"])){
                                 $data=amoMascotas($datos["amo"],$datos["mascotas"],$datos["idMascotas"],$datos["idRel"]);
+                            }elseif(isset($datos["amo"])&&!isset($datos["mascotas"])){
+                                $data=amoMascotas($datos["amo"]);
+                            }elseif(!isset($datos["amo"])){
+                                $data=amoMascotas();
                             }
                             break;
     }}
@@ -116,7 +128,38 @@
         if(!$validNew)$data["invalidNew"]=true;
         return $data;
     }
-    function amoMascotas($amo,$mascotas,$idMascotas,$idRel) {
+
+    function todasMascotas($mascotas,$idMascotas){
+        $validNew=true;
+        $tabla = '
+        <table>
+            <thead>
+                    <th>Nombre</th>
+                    <th>Edad</th>
+                    <th>Especie</th>
+                    <th>Raza</th>
+                    <th style="width: 9rem;">Fecha Alta</th>
+                    <th style="width: 10rem;">Fecha Defuncion</th>
+        ';
+        if(isset($mascotas) && isset($idMascotas)){
+            for($i=0; $i<sizeof($mascotas); $i++){
+                $mascotas[$i]["fechaAltaMascota"]=substr($mascotas[$i]["fechaAltaMascota"],0,-9);
+                if(!isset($mascotas[$i]["fechaDefuncionMascota"])){
+                    $mascotas[$i]["fechaDefuncionMascota"]="";
+                }else{
+                    $mascotas[$i]["fechaDefuncionMascota"]=substr($mascotas[$i]["fechaDefuncionMascota"],0,-9);
+                }
+            }
+            $tabla=generarTabla($mascotas,$tabla,6,$validNew,$idMascotas);
+        }else{
+            $tabla=generarTabla([],$tabla,6,$validNew);
+        }
+        $data['table'] = $tabla;
+        
+        return $data;
+    }
+
+    function amoMascotas($amo=null,$mascotas=null,$idMascotas=null,$idRel=null) {
         $validNew=true;
         if(!isset($amo)){
             $tabla = '
@@ -160,12 +203,12 @@
                 $tabla=generarTabla([],$tabla,6,$validNew);
             }
             $data['table'] = $tabla;
-            $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_amo_mascota/".$amo).'">Agregar Relacion Amo-Mascota</a>';
+            $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion Amo-Mascota</a>';
             return $data;
         }
     }
 
-    function mascotaAmos($mascota,$amos,$idAmos,$idRel) {
+    function mascotaAmos($mascota=null,$amos=null,$idAmos=null,$idRel=null) {
         $validNew=true;
         if(!isset($mascota)){
             $tabla = '
@@ -208,7 +251,7 @@
             }
             $data['table'] = $tabla;
             if(!$validNew)$data["invalidNew"]=true;
-            $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("inicio/new_relacion_mascota_amo/".$mascota).'">Agregar Relacion Mascota-Amo</a>';
+            $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amo/".$mascota).'">Agregar Relacion Mascota-Amo</a>';
             return $data;
         }
     }
@@ -288,10 +331,10 @@
                     <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('veterinario/')?>">Veterinarios</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/amo_mascotas"?>">Amo_Mascotas</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."amo_mascotas"?>">Amo_Mascotas</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/mascota_amos"?>">Mascota_Amos</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."mascota_amos"?>">Mascota_Amos</a>
                 </li>
             </ul>
         </div>
@@ -303,7 +346,7 @@
         <div class="col-10 d-flex flex-column align-items-center">
             <div class="d-flex align-items-end justify-content-center">
                 <?php if(isset($mascota_amos_list)){?>
-                    <form class="divListaSelect d-flex align-items-center" action="<?= base_url('inicio/amo_mascotas')?>" method="post" id="formularioAmoMascotas">
+                    <form class="divListaSelect d-flex align-items-center" action="<?= base_url('amo_mascotas')?>" method="post" id="formularioAmoMascotas">
                         <select class="me-2" name="listaAmos" id="ListaAmos">
                             <option value="" selected disabled>Seleccione un amo de la lista </option>
                             <?php foreach($mascota_amos_list as $amo){?>
@@ -313,7 +356,7 @@
                         <input type="submit" class="btn btn-sm btn-outline btn-primary" value="buscar" form="formularioAmoMascotas">
                     </form> 
                 <?php }elseif(isset($amo_mascotas_list)){ ?>
-                    <form class="divListaSelect d-flex align-items-center" action="<?php base_url('inicio/mascota_amos')?>" method="post" id="formularioMascotaAmos">
+                    <form class="divListaSelect d-flex align-items-center" action="<?= base_url('mascota_amos')?>" method="post" id="formularioMascotaAmos">
                         <select class="me-2" name="ListaMascotas" id="ListaMascotas">
                             <option value="" selected disabled>Seleccione una mascota de la lista </option>
                             <?php foreach($amo_mascotas_list as $mascota){?>
@@ -330,7 +373,8 @@
                     if(isset($tipoMetodo)){
                         echo "<div class='agregarButton col-12 d-flex aling-items-center justify-content-between'>";
                         switch($tipoMetodo){
-                            case "Mascotas": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarMascotas'>Agregar Mascota</button><button class='btn p-1 m-2'><a class='text-reset text-decoration-none' href='".base_url()."inicio/todas_mascotas'>Mostrar Todas</a></button>";break;
+                            case "Mascotas": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarMascotas'>Agregar Mascota</button><button class='btn p-1 m-2'><a class='text-reset text-decoration-none' href='".base_url()."mascota/todas_mascotas'>Mostrar Todas</a></button>";break;
+                            case "TodasMascotas": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarMascotas'>Agregar Mascota</button><button class='btn p-1 m-2'><a class='text-reset text-decoration-none' href='".base_url()."mascota/todas_mascotas'>Mostrar Todas</a></button>";break;
                             case "Amos": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarAmos'>Agregar Amo</button>";break;
                             case "Veterinarios": echo "<button class='btn p-1 m-2' data-bs-toggle='modal' data-bs-target='#modalAgregarVeterinarios'>Agregar Veterinario</button>";break; 
                             case "AmoMascotas": if(!isset($data["invalidNew"])){

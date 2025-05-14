@@ -46,7 +46,7 @@ class MascotaAmo extends BaseController
                 "idMascotas"=>$idAmos,
                 "idRel"=>$idRel
             ];
-            $data["tipoMetodo"]="AmoMascotas";
+            $data["tipoMetodo"]="MascotaAmos";
             return view('inicioView', $data);
         }
     }

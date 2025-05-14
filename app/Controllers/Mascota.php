@@ -10,7 +10,7 @@ use Error;
 
 class Mascota extends BaseController
 { 
-    public function mascotas(){
+    public function index(){
         $mascotas=new MascotaModel();
         try{
             $mascotasVivas=$mascotas->getAllMascotasVivas();
@@ -144,7 +144,6 @@ class Mascota extends BaseController
     }
 
     public function todasMascotas(){
-        $validNew=true;
         $mascotasModel=new MascotaModel();
         try{
             $mascotas=$mascotasModel->getAllMascotas();
@@ -152,27 +151,12 @@ class Mascota extends BaseController
         } catch(Error $e){
             return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }
-        /*
-        if(isset($mascotas) && isset($idMascotas)){
-            for($i=0; $i<sizeof($mascotas); $i++){
-                $mascotas[$i]["fechaAltaMascota"]=substr($mascotas[$i]["fechaAltaMascota"],0,-9);
-                if(!isset($mascotas[$i]["fechaDefuncionMascota"])){
-                    $mascotas[$i]["fechaDefuncionMascota"]="";
-                }else{
-                    $mascotas[$i]["fechaDefuncionMascota"]=substr($mascotas[$i]["fechaDefuncionMascota"],0,-9);
-                }
-            }
-            $tabla=$this->generarTabla($mascotas,$tabla,6,$validNew,$idMascotas);
-        }else{
-            $tabla=$this->generarTabla([],$tabla,6,$validNew);
-        } */
         $data['datos'] = [
             'todasMascotas' => $mascotas,
             'idMascotas' => $idMascotas,
         ];
-        $data["tipoTabla"]="TodasMascotas";
+        $data["tipoMetodo"]="TodasMascotas";
         
         return view('inicioView', $data);
     }
 }
-?>
