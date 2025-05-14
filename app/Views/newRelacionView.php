@@ -13,19 +13,19 @@
         <div class="col-10">
             <ul class="d-flex mb-0">
                 <li class="dropdown-item">
-                    <a class=" text-reset text-decoration-none" href="<?= base_url()."inicio/mascotas"?>">Mascotas</a>
+                    <a class=" text-reset text-decoration-none" href="<?= base_url()."mascotas"?>">Mascotas</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('inicio/amos')?>">Amos</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('amos')?>">Amos</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('inicio/veterinarios')?>">Veterinarios</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('veterinarios')?>">Veterinarios</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/amo_mascotas"?>">Amo_Mascotas</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."amo_mascotas"?>">Amo_Mascotas</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/mascota_amos"?>">Mascota_Amos</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."mascota_amos"?>">Mascota_Amos</a>
                 </li>
             </ul>
         </div>
@@ -36,7 +36,7 @@
     <section class="divFinalRel d-flex col-12 flex-column justify-content-center align-items-center mb-3">
         <div class="col-10 d-flex flex-column align-items-center">
             <div class="col-auto d-flex flex-column align-items-center justify-content-center">
-                <form id="formNewRel" class="col-12 d-flex flex-column justify-content-around m-4 mt-2" action="<?=base_url()?>inicio/new_relacion_<?php if(isset($AmosDisponibles)) echo "mascota_amo";elseif(isset($MascotasDisponibles)) echo "amo_mascota"?>" method="post">
+                <form id="formNewRel" class="col-12 d-flex flex-column justify-content-around m-4 mt-2" action="<?=base_url()?><?php if(isset($AmosDisponibles)) echo "mascota_amos";elseif(isset($MascotasDisponibles)) echo "amo_mascotas"?>/new_relacion_<?php if(isset($AmosDisponibles)) echo "mascota_amo";elseif(isset($MascotasDisponibles)) echo "amo_mascota"?>" method="post">
                     <div class="col-auto mb-4 d-flex flex-column">
                         <label for="<?php if(isset($AmosDisponibles)) echo "amoNewRelacion";elseif(isset($MascotasDisponibles)) echo "mascotaNewRelacion"?>" class="form-label"><?php if(isset($AmosDisponibles)) echo "seleccione al nuevo amo";elseif(isset($MascotasDisponibles)) echo "Seleccione a la nueva mascota"?></label>
                         <select name="<?php if(isset($AmosDisponibles)) echo "amoNewRelacion";elseif(isset($MascotasDisponibles)) echo "mascotaNewRelacion"?>" id="<?php if(isset($AmosDisponibles)) echo "amoNewRelacion";elseif(isset($MascotasDisponibles)) echo "mascotaNewRelacion"?>">

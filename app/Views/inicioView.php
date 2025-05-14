@@ -18,9 +18,9 @@
                                 }
                                 break;
         case "MascotaAmos": if(isset($datos["mascota"])&&isset($datos["amos"])){
-                                $data=mascotaAmos($datos["mascota"],$datos["amos"],$datos["idAmos"],$datos["idRel"]);
+                                $data=mascotaAmos($datos["mascota"],$datos["fechaDefuncion"],$datos["amos"],$datos["idAmos"],$datos["idRel"]);
                             }elseif(isset($datos["mascota"])&&!isset($datos["amos"])){
-                                $data=mascotaAmos($datos["mascota"]);
+                                $data=mascotaAmos($datos["mascota"],$datos["fechaDefuncion"]);
                             }elseif(!isset($datos["mascota"])){
                                 $data=mascotaAmos();
                             }
@@ -176,6 +176,7 @@
             $data=[
                 "table"=>$tabla
             ];
+            $data["invalidNew"]=true;
             return $data;
         }
         else{
@@ -203,12 +204,14 @@
                 $tabla=generarTabla([],$tabla,6,$validNew);
             }
             $data['table'] = $tabla;
-            $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion Amo-Mascota</a>';
+            if($validNew){
+                $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion</a>';
+            }
             return $data;
         }
     }
 
-    function mascotaAmos($mascota=null,$amos=null,$idAmos=null,$idRel=null) {
+    function mascotaAmos($mascota=null,$fechaDefuncion=null,$amos=null,$idAmos=null,$idRel=null) {
         $validNew=true;
         if(!isset($mascota)){
             $tabla = '
@@ -221,9 +224,8 @@
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
             ';
             $tabla=generarTabla([],$tabla,5,$validNew);
-            $data=[
-                "table"=>$tabla
-            ];
+            $data["table"]=$tabla;
+            $data["invalidNew"]=true;
             return $data;
         }
         else{
@@ -250,8 +252,11 @@
                 $tabla=generarTabla([],$tabla,5,$validNew);
             }
             $data['table'] = $tabla;
-            if(!$validNew)$data["invalidNew"]=true;
-            $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amo/".$mascota).'">Agregar Relacion Mascota-Amo</a>';
+            if(isset($fechaDefuncion["fechaD"])||!$validNew){
+                $data["invalidNew"]=true;
+            }else{
+                $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amo/".$mascota).'">Agregar Relacion</a>';
+            }
             return $data;
         }
     }
@@ -357,7 +362,7 @@
                     </form> 
                 <?php }elseif(isset($amo_mascotas_list)){ ?>
                     <form class="divListaSelect d-flex align-items-center" action="<?= base_url('mascota_amos')?>" method="post" id="formularioMascotaAmos">
-                        <select class="me-2" name="ListaMascotas" id="ListaMascotas">
+                        <select class="me-2" name="listaMascotas" id="listaMascotas">
                             <option value="" selected disabled>Seleccione una mascota de la lista </option>
                             <?php foreach($amo_mascotas_list as $mascota){?>
                                 <?='<option name="mascota" value=' .$mascota['idMascota']. '>' . $mascota['nombreMascota']. '</option>' ?>

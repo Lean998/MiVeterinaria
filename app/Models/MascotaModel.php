@@ -15,8 +15,8 @@ class MascotaModel extends Model{
 
     public function getAllMascotasVivas(){
         return $this->select("mascotas.idMascota AS id,nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota")
-        ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
-        ->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
+        ->where("mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
@@ -27,8 +27,8 @@ class MascotaModel extends Model{
 
     public function getAllMascotasVivasList(){
         return $this->select("mascotas.idMascota, mascotas.nombreMascota")
-        ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
-        ->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
+        ->where("mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
@@ -41,13 +41,17 @@ class MascotaModel extends Model{
     }
     public function getAllIdMascotasVivas(){
         return $this->select("mascotas.idMascota AS id")
-        ->join("AmosMascotas","AmosMascotas.idMascota=Mascotas.idMascota","left")
-        ->where("(Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL) OR (Mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.fechaFinAmoMascota IS NOT NULL)")
+        ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
+        ->where("mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
     public function getAllIdMascotas(){
         return $this->select("mascotas.idMascota AS id")
         ->findAll();
+    }
+
+    public function getFechaDefuncionMascota($id){
+        return $this->select("fechaDefuncionMascota AS fechaD")->find($id);
     }
 }

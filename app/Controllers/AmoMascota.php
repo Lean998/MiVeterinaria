@@ -22,6 +22,7 @@ class AmoMascota extends BaseController
             $data=[
                 "mascota_amos_list"=>$amos,
             ];
+            $data["tipoMetodo"]="AmoMascotas";
             return view("inicioView",$data);
         }
         else{

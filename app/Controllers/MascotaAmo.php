@@ -21,6 +21,7 @@ class MascotaAmo extends BaseController
             }
             $data=[
                 "amo_mascotas_list"=>$mascotas,
+                "tipoMetodo"=>"MascotaAmos"
             ];
             return view("inicioView",$data);
         }
@@ -28,6 +29,7 @@ class MascotaAmo extends BaseController
             $mascotaModel=new MascotaModel();
             try{
                 $mascotas=$mascotaModel->getAllMascotasList();
+                $fechaDefuncion=$mascotaModel->getFechaDefuncionMascota($mascota);
             } catch(Error $e){
                 return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
@@ -41,9 +43,10 @@ class MascotaAmo extends BaseController
                 return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
             }
             $data['datos'] = [
+                "fechaDefuncion"=>$fechaDefuncion,
                 "mascota"=>$mascota,
                 "amos"=>$amos,
-                "idMascotas"=>$idAmos,
+                "idAmos"=>$idAmos,
                 "idRel"=>$idRel
             ];
             $data["tipoMetodo"]="MascotaAmos";

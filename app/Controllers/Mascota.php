@@ -23,7 +23,6 @@ class Mascota extends BaseController
             'idMascotas' => $idMascotas,
         ];
         $data["tipoMetodo"]="Mascotas";
-        log_message('debug', 'Error al cargar la vista');
         return view('inicioView', $data);
     }
     public function altaMascotas(){
