@@ -159,7 +159,8 @@ class Inicio extends BaseController
     public function update()
     {
         $id = $this->request->getPost('id');
-        $tipo = $this->request->getPost('tipo');
+        $tipoPost = $this->request->getPost('tipo'); 
+        $tipo = $tipoPost !== null ? trim($tipoPost) : null;
 
         if ($tipo === null || $id === null) {
             return redirect()->to(base_url('inicio'))->with('error', 'Datos de actualización incompletos.');
@@ -167,8 +168,8 @@ class Inicio extends BaseController
 
         $model = null;
         $dataToUpdate = [];
-        $redireccionExito = base_url('inicio');
-        $redireccionError = base_url('inicio'); 
+        $redireccionError = base_url('inicio/modificar/' . $tipo . '/' . $id); 
+        $idFieldName = 'id' . ucfirst($tipo);
 
         try {
             switch ($tipo) {
@@ -181,8 +182,7 @@ class Inicio extends BaseController
                         'edadMascota' => $this->request->getPost('edadMascota'),
                         'fechaDefuncionMascota' => $this->request->getPost('fechaDefuncionMascota'),
                     ];
-                    $redireccionExito = base_url('inicio/mascotas');
-                    $redireccionError = base_url('inicio/mascotas');
+                    $redireccionExito = base_url('inicio/modificar/mascota/' . $id);
                     break;
                 case 'amo':
                     $model = new AmoModel();
@@ -191,8 +191,7 @@ class Inicio extends BaseController
                         'apellidoAmo'   => $this->request->getPost('apellidoAmo'),
                         'telefonoAmo'   => $this->request->getPost('telefonoAmo'),
                     ];
-                    $redireccionExito = base_url('inicio/amos');
-                    $redireccionError = base_url('inicio/amos');
+                    $redireccionExito = base_url('inicio/modificar/amo/' . $id);
                     break;
                 case 'veterinario':
                     $model = new VeterinarioModel();
@@ -203,18 +202,24 @@ class Inicio extends BaseController
                         'telefonoVeterinario' => $this->request->getPost('telefonoVeterinario'),
                         'fechaEgresoVeterinario' => $this->request->getPost('fechaEgresoVeterinario'), 
                     ];
-                    $redireccionExito = base_url('inicio/veterinarios');
-                    $redireccionError = base_url('inicio/veterinarios');
+                    $redireccionExito = base_url('inicio/modificar/veterinario/' . $id);
                     break;
                 default:
                    
                     return redirect()->to(base_url('inicio'))->with('error', 'Tipo de entidad no válido para actualizar.');
             }
 
-            $model->update($id, $dataToUpdate);
+            if ($model === null) {
+                 return redirect()->to(base_url('inicio'))->with('error', 'No se pudo determinar el modelo para la actualización.');
+            }
 
-            return redirect()->to($redireccionExito)->with('mensaje', ucfirst($tipo) . ' actualizado correctamente.');
+            $updateResult = $model->update($id, $dataToUpdate);
 
+            if ($updateResult) {
+                return redirect()->to($redireccionExito)->with('mensaje', ucfirst($tipo) . ' actualizado correctamente.');
+            } else {
+                return redirect()->to($redireccionError)->with('error', 'No se pudo actualizar el ' . $tipo . '. Verifique los datos e intente nuevamente.');
+            }
         } catch (Error $e) {
             return redirect()->to($redireccionError)->with('error', 'Ocurrió un error al intentar actualizar el ' . $tipo . '. Estamos trabajando en ello.');
         }
