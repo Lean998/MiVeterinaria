@@ -32,3 +32,5 @@ $routes->get('/mascota/mascota_difunta/(:num)', 'Mascota::mascotaDifunta/$1');
 $routes->post('/mascota/mascota_difunta', 'Mascota::mascotaDifunta');
 $routes->get('/inicio/modificar/(:segment)/(:num)', 'Inicio::modificar/$1/$2');
 $routes->get("/miveterinaria","MiVeterinariaDB::index");
+$routes->post('/inicio/update', 'Inicio::update');
+$routes->get('/inicio/mascotas', 'Inicio::mascotas');
