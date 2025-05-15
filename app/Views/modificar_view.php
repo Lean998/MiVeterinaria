@@ -35,10 +35,9 @@
         <div id="mensaje-success" class="alert d-none" role="alert"></div>
     </div>
     
-    <div class="container my-4">
-        <h2>Modificar <?= ucfirst($tipo) ?>
-
-        <form action="<?= base_url('inicio/update') ?>" method="post">
+    <div class="container my-4 d-flex flex-column justify-content-center align-items-center divModificar">
+        <h2 class="col-12 text-center pt-4">Modificar <?= ucfirst($tipo) ?></h2>
+        <form class="col-12 px-4 pb-4" action="<?= base_url('inicio/update') ?>" method="post">
             <input type="hidden" name="id" value="<?= $entidad['id' . ucfirst($tipo)] ?>">
             <input type="hidden" name="tipo" value="<?= $tipo ?> ">
 
@@ -90,11 +89,11 @@
                     <input type="text" class="form-control" id="telefonoVeterinario" name="telefonoVeterinario" value="<?= old('telefonoVeterinario', $entidad['telefonoVeterinario']) ?>" required>
                 </div>
             <?php } else { ?>
-                <p> class="text-danger">Tipo de entidad no válido.</p>
+                <p class="text-danger">Tipo de entidad no válido.</p>
             <?php } ?>    
             
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            <a href="<?= base_url('inicio/' . ($tipo === 'mascota' ? 'mascotas' : ($tipo === 'amo' ? 'amos' : ($tipo === 'veterinario' ? 'veterinarios' : '')))) ?>" class="btn btn-secondary">Cancelar</a>
+            <a href="<?= base_url(($tipo === 'mascota' ? 'mascota' : ($tipo === 'amo' ? 'amo' : ($tipo === 'veterinario' ? 'veterinario' : '')))) ?>" class="btn btn-secondary">Cancelar</a>
 
         </form>
     </div>

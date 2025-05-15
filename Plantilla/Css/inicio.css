@@ -39,7 +39,11 @@ header div ul li a{
 .divListaSelect{
     min-height: 13vh;
 }
-
+.divModificar{
+    width: 40vw;
+    border: solid 0.01rem black;
+    border-radius: 7px;
+}
 .agregarButton button:hover{
     border: solid 0.01rem black;
 }

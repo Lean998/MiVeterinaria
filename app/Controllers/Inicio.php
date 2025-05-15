@@ -182,7 +182,7 @@ class Inicio extends BaseController
                         'edadMascota' => $this->request->getPost('edadMascota'),
                         'fechaDefuncionMascota' => $this->request->getPost('fechaDefuncionMascota'),
                     ];
-                    $redireccionExito = base_url('inicio/modificar/mascota/' . $id);
+                    $redireccionExito = base_url('mascota');
                     break;
                 case 'amo':
                     $model = new AmoModel();
@@ -191,7 +191,7 @@ class Inicio extends BaseController
                         'apellidoAmo'   => $this->request->getPost('apellidoAmo'),
                         'telefonoAmo'   => $this->request->getPost('telefonoAmo'),
                     ];
-                    $redireccionExito = base_url('inicio/modificar/amo/' . $id);
+                    $redireccionExito = base_url('amo');
                     break;
                 case 'veterinario':
                     $model = new VeterinarioModel();
@@ -202,7 +202,7 @@ class Inicio extends BaseController
                         'telefonoVeterinario' => $this->request->getPost('telefonoVeterinario'),
                         'fechaEgresoVeterinario' => $this->request->getPost('fechaEgresoVeterinario'), 
                     ];
-                    $redireccionExito = base_url('inicio/modificar/veterinario/' . $id);
+                    $redireccionExito = base_url('veterinario');
                     break;
                 default:
                    
@@ -216,7 +216,7 @@ class Inicio extends BaseController
             $updateResult = $model->update($id, $dataToUpdate);
 
             if ($updateResult) {
-                return redirect()->to($redireccionExito)->with('mensaje', ucfirst($tipo) . ' actualizado correctamente.');
+                return redirect()->to($redireccionExito)->with('success', ucfirst($tipo) . ' actualizado correctamente.');
             } else {
                 return redirect()->to($redireccionError)->with('error', 'No se pudo actualizar el ' . $tipo . '. Verifique los datos e intente nuevamente.');
             }
