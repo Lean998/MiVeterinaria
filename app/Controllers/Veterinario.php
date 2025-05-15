@@ -36,16 +36,15 @@ class Veterinario extends BaseController {
         if (!$validacion->withRequest($this->request)->run()) {
             return redirect()->to(base_url().'veterinario/')->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
         }
-
         $veterinarioModel = new VeterinarioModel();
         $data = [
             'nombreVeterinario' => $this->request->getPost('nombreVeterinario'),
             'apellidoVeterinario' => $this->request->getPost('apellidoVeterinario'),
             'especialidadVeterinario' => $this->request->getPost('especialidadVeterinario'),
-            'fechaIngresoVeterinario' => Time::now()->toDateTimeString(),
             'telefonoVeterinario' => $this->request->getPost('telefonoVeterinario'),
+            'fechaIngresoVeterinario' => Time::now()->toDateTimeString()
         ];
-        if($veterinarioModel->save($data)){
+        if($veterinarioModel->insert($data)){
             return redirect()->to(base_url().'veterinario/')->with('success', 'Veterinario registrado con exito!');
         } else{
             return redirect()->to(base_url().'veterinario/')->with('error', 'Ocurrio un error al registrar al veterinario, intente de nuevo mas tarde.');

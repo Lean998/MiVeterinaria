@@ -123,8 +123,8 @@ class MiVeterinariaDBModel extends Model{
                 "constraint" => 255
             ],
             "telefonoVeterinario" => [
-                "type"=> "int",
-                "unasigned" => true
+                "type"=> "varchar",
+                "constraint" => 20
             ],
             "fechaIngresoVeterinario" => [
                 "type" => "datetime"

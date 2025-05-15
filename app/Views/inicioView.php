@@ -639,7 +639,7 @@
                             </div>
                             <div class="col-12">
                                 <label for="telefonoVeterinario" class="form-label">Telefono</label>
-                                <input type="text" class="form-control <?= session('errors.telefonoVeterinario') ? 'is-invalid' : '' ?>" value="<?= old('telefonoVeterinario') ?>" id="telefonoVeterinario" name="telefonoVeterinario" >
+                                <input type="text" class="form-control <?= session('errors.telefonoVeterinario') ? 'is-invalid' : '' ?>" <?php $oldTel=old("telefonoVeterinario");if(isset($oldTel)) echo 'value="'.$oldTel.'"' ?> id="telefonoVeterinario" name="telefonoVeterinario" >
                                 <div class="invalid-feedback">
                                     <?= str_replace("telefonoVeterinario","El telefono",session('errors.telefonoVeterinario')) ?? '' ?>
                                 </div>
