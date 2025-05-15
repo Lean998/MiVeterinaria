@@ -204,9 +204,7 @@
                 $tabla=generarTabla([],$tabla,6,$validNew);
             }
             $data['table'] = $tabla;
-            if($validNew){
-                $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion</a>';
-            }
+            $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion</a>';
             return $data;
         }
     }

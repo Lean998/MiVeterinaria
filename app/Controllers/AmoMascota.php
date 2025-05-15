@@ -75,7 +75,7 @@ class AmoMascota extends BaseController
             $validacion=service("validation");
             $validacion->setRules($rules,spanishErrorMessages($rules));
             if(!$validacion->withRequest($this->request)->run()){
-                return redirect()->to(base_url()."amo_mascota/new_relacion_amo_mascota/".$post["idNewRel"])->withInput()->with('errors', $validacion->getErrors());
+                return redirect()->to(base_url()."amo_mascotas/new_relacion_amo_mascota/".$post["idNewRel"])->withInput()->with('errors', $validacion->getErrors());
             }
             $sqlIn=[
                 "fechaInicioAmoMascota"=>$post["fechaNewRel"],
@@ -86,11 +86,11 @@ class AmoMascota extends BaseController
                 $relAmoMasc=new AmoMascotaModel();
                 if(!$relAmoMasc->insert($sqlIn)){
                     $relAmoMasc=null;
-                    return redirect()->to(base_url()."amo_mascota/new_relacion_amo_mascota/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
+                    return redirect()->to(base_url()."amo_mascotas/new_relacion_amo_mascota/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
                 }
                 return redirect()->to(base_url()."inicio")->with("success","Relacion creada con exito");
             }catch(Error $e){
-                return redirect()->to(base_url()."amo_mascota/new_relacion_amo_mascota/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
+                return redirect()->to(base_url()."amo_mascotas/new_relacion_amo_mascota/".$post["idNewRel"])->with("error","Ocurrio un error al intentar crear la relacion");
             }
         }
     }    

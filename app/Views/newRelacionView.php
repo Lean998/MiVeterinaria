@@ -13,19 +13,19 @@
         <div class="col-10">
             <ul class="d-flex mb-0">
                 <li class="dropdown-item">
-                    <a class=" text-reset text-decoration-none" href="<?= base_url()."mascotas"?>">Mascotas</a>
+                    <a class=" text-reset text-decoration-none" href="<?= base_url()."mascota"?>">Mascotas</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('amos')?>">Amos</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('amo')?>">Amos</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('veterinarios')?>">Veterinarios</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('veterinario')?>">Veterinarios</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."amo_mascotas"?>">Amo_Mascotas</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."amo_mascota"?>">Amo_Mascotas</a>
                 </li>
                 <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."mascota_amos"?>">Mascota_Amos</a>
+                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."mascota_amo"?>">Mascota_Amos</a>
                 </li>
             </ul>
         </div>
