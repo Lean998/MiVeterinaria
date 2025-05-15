@@ -59,10 +59,10 @@
                             <button class="btn dropdown-toggle dark btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
                             <ul class="dropdown-menu dark">';
                 if(isset($valor["nombreMascota"]) && isset($valor["fechaAltaMascota"]) && !isset($difunto))$tabla.='<li>
-                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("mascota_amo/new_relacion_mascota_amo/".$ids[$i]["id"]).'">Nueva Relacion</a>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amo/".$ids[$i]["id"]).'">Nueva Relacion</a>
                                 </li>';
                 if(isset($valor["nombreAmo"]) && isset($valor["fechaAltaAmo"]))$tabla.='<li>
-                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("amo_mascota/new_relacion_amo_mascota/".$ids[$i]["id"]).'">Nueva Relacion</a>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$ids[$i]["id"]).'">Nueva Relacion</a>
                                 </li>';
                 if(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"]) && !isset($difunto)){
                                     $tipoEntidad = '';
@@ -253,7 +253,7 @@
             if(isset($fechaDefuncion["fechaD"])||!$validNew){
                 $data["invalidNew"]=true;
             }else{
-                $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amo/".$mascota).'">Agregar Relacion</a>';
+                $data['newRelMascAmo']='<a class="text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amos/".$mascota).'">Agregar Relacion</a>';
             }
             return $data;
         }
