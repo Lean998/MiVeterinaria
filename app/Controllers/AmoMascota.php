@@ -23,6 +23,7 @@ class AmoMascota extends BaseController
                 "mascota_amos_list"=>$amos,
             ];
             $data["tipoMetodo"]="AmoMascotas";
+            $data["cabeza"]=view("TrososView/headView");
             return view("inicioView",$data);
         }
         else{
@@ -48,6 +49,7 @@ class AmoMascota extends BaseController
                 "idRel"=>$idRel
             ];
             $data["tipoMetodo"]="AmoMascotas";
+            $data["cabeza"]=view("TrososView/headView");
             return view('inicioView', $data);
         }
     }
@@ -66,6 +68,7 @@ class AmoMascota extends BaseController
                 "MascotasDisponibles"=>$mascotas,
                 "idAmoNewRelacion"=>$idAmo
             ];
+            $data["cabeza"]=view("TrososView/headView");
             return view("newRelacionView",$data);
         }else{
             $rules=[

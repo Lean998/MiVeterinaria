@@ -20,6 +20,7 @@ class Veterinario extends BaseController {
             'idVeterinarios' => $idVeterinarios
         ];
         $data["tipoMetodo"]="Veterinarios";
+        $data["cabeza"]=view("TrososView/headView");
         return view('inicioView', $data);
     }
 
@@ -51,13 +52,15 @@ class Veterinario extends BaseController {
         }
     }
 
-    public function eliminarVeterinario($id){
+    public function bajaVeterinario($id){
         try{
             if(isset($id)){
                 $veterinarioModel=new VeterinarioModel();
                 $veterinario=$veterinarioModel->getVeterinario($id);
                 if(isset($veterinario)){if(!empty($veterinario)){
-                    return view("eliminarView",["id"=>$id,"tipo"=>"veterinario"]);
+                    $dataVet=["id"=>$id,"tipo"=>"veterinario"];
+                    $dataVet["cabeza"]=view("TrososView/headView");
+                    return view("eliminarView",$dataVet);
                 }else return redirect()->to(base_url()."veterinario/")->with("error","El veterinario no se encuentra en la tabla");
                 }else return redirect()->to(base_url()."veterinario/")->with("error","Ocurrio un error al momento de intentar obtener al veterinario");
             }

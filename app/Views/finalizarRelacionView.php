@@ -8,28 +8,9 @@
     <title>Inicio</title>
 </head>
 <body>
-    <header class="d-flex col-12 align-items-center justify-content-between">
-        <div class="col-auto ms-3"><a href="<?= base_url()."inicio"?>"><img class="img-fluid" src="<?= substr(base_url(),0,-17)?>Plantilla/imgs/MenuLogo.jpg" alt="Logo"></a></div>
-        <div class="col-10">
-            <ul class="d-flex mb-0">
-                <li class="dropdown-item">
-                    <a class=" text-reset text-decoration-none" href="<?= base_url()."inicio/mascotas"?>">Mascotas</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('inicio/amos')?>">Amos</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('inicio/veterinarios')?>">Veterinarios</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/amo_mascotas"?>">Amo_Mascotas</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/mascota_amos"?>">Mascota_Amos</a>
-                </li>
-            </ul>
-        </div>
-    </header>
+    <?php
+        if(isset($cabeza))echo $cabeza;
+    ?>
     <div class="container py-3">
         <div id="mensaje-success" class="alert d-none" role="alert"></div>
     </div>

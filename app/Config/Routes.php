@@ -9,7 +9,7 @@ $routes->get('/', 'Inicio::index');
 $routes->get('/inicio', 'Inicio::index');
 $routes->get('/inicio/finalizar_relacion/(:num)', 'Inicio::finalizarRelacion/$1');
 $routes->post('/inicio/finalizar_relacion', 'Inicio::finalizarRelacion');
-$routes->post('/inicio/eliminar', 'Inicio::eliminar');
+$routes->post('/inicio/baja', 'Inicio::baja');
 $routes->get('/inicio/modificar/(:segment)/(:num)', 'Inicio::modificar/$1/$2');
 $routes->post('/inicio/update', 'Inicio::update');
 $routes->get('/inicio/mascotas', 'Inicio::mascotas');
@@ -17,12 +17,12 @@ $routes->get('/inicio/mascotas', 'Inicio::mascotas');
 $routes->get('/mascota', 'Mascota::index');
 $routes->get('/mascota/todas_mascotas', 'Mascota::todasMascotas');
 $routes->post('/mascota/alta_mascotas', 'Mascota::altaMascotas');
-$routes->get('/mascota/eliminar_mascota/(:num)', 'Mascota::eliminarMascota/$1');
+$routes->get('/mascota/baja_mascota/(:num)', 'Mascota::bajaMascota/$1');
 $routes->get('/mascota/mascota_difunta/(:num)', 'Mascota::mascotaDifunta/$1');
 $routes->post('/mascota/mascota_difunta', 'Mascota::mascotaDifunta');
 
 $routes->get('/amo', 'Amo::index');
-$routes->get('/amo/eliminar_amo/(:num)', 'Amo::eliminarAmo/$1');
+$routes->get('/amo/baja_amo/(:num)', 'Amo::bajaAmo/$1');
 $routes->post('/amo/alta_amos', 'Amo::altaAmos');
 
 $routes->get('/veterinario', 'Veterinario::index');
@@ -38,6 +38,6 @@ $routes->get('/mascota_amos/new_relacion_mascota_amo/(:num)', 'MascotaAmo::newRe
 $routes->post('/mascota_amos/new_relacion_mascota_amo', 'MascotaAmo::newRelacionMascotaAmo');
 
 $routes->post('/veterinario/alta_veterinarios', 'Veterinario::altaVeterinarios');
-$routes->get('/veterinario/eliminar_veterinario/(:num)', 'Veterinario::eliminarVeterinario/$1');
+$routes->get('/veterinario/baja_veterinario/(:num)', 'Veterinario::bajaVeterinario/$1');
 
 $routes->get("/miveterinaria","MiVeterinariaDB::index");

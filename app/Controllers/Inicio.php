@@ -2,26 +2,27 @@
 
 namespace App\Controllers;
 
-use App\Libraries\SpanishErrorsLibrary;
 use App\Models\MascotaModel;
 use App\Models\AmoModel;
 use App\Models\AmoMascotaModel;
 use App\Models\VeterinarioModel;
-use CodeIgniter\I18n\Time;
 use Error;
 
 class Inicio extends BaseController
 {
     public function index(): string
     {
-        return view('inicioView');
+        $data["cabeza"]=view("TrososView/headView");
+        return view('inicioView',$data);
     }
 
     public function finalizarRelacion($idRel=null){
         helper(['form', 'SpanishErrors_helper']);
         $post=$this->request->getPost();
         if(empty($post)){
-            return view("finalizarRelacionView",["idRel"=>$idRel]);
+            $data=["idRel"=>$idRel];
+            $data["cabeza"]=view("TrososView/headView");
+            return view("finalizarRelacionView",$data);
         }else{
             $post=$this->request->getPost(["motivoFinalRel","fechaFinalRel","idFinalRel"]);
             $rules=[
@@ -59,7 +60,7 @@ class Inicio extends BaseController
                     if(!empty($idMascota)){
                         try{
                             $mascota=new MascotaModel();
-                            if(!$mascota->update($idMascota["idMascota"],["fechaDefuncionMascota"=>$post["fechaFinalRel"]])){
+                            if(!$mascota->update($idMascota["idMascota"],["fechaDefuncionMascota"=>$post["fechaFinalRel"],"deleted_at"=>$post["fechaFinalRel"]])){
                                 $mascota=null;
                                 return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Relacion finalizada con exito.<br>No se pudo modificar la fecha de defuncion de la mascota.");
                             }
@@ -78,10 +79,9 @@ class Inicio extends BaseController
         }
     }
    
-    public function eliminar(){
+    public function baja(){
         try{
             $post=$this->request->getPost(["id"]);
-            //var_dump($post);exit();
             if(isset($post["id"])){
                 $tipo=$this->request->getPost(["tipo"]);
                 if(isset($tipo["tipo"])){
@@ -90,27 +90,34 @@ class Inicio extends BaseController
                         if($relAM->eliminarRelacionesMascota($post["id"])){
                             $mascotaModel=new MascotaModel();
                             if($mascotaModel->delete($post["id"])){
-                                return redirect()->to(base_url()."mascota/")->with("success","La mascota y sus relaciones han sido eliminadas con exito.");
+                                return redirect()->to(base_url()."mascota/")->with("success","La mascota y sus relaciones han sido dadas de baja con exito.");
                             }
-                            return redirect()->to(base_url()."mascota/")->with("error","Las relaciones de la mascota han sido borradas<br>Ocurrio un error al intentar eliminar a la mascota");
+                            return redirect()->to(base_url()."mascota/")->with("error","Las relaciones de la mascota han sido dadas de baja<br>Ocurrio un error al intentar dar de baja a la mascota");
                         }
-                        return redirect()->to(base_url()."mascota/")->with("error","Ocurrio un error al intentar eliminar a la mascota");
+                        return redirect()->to(base_url()."mascota/")->with("error","Ocurrio un error al intentar dar de baja a la mascota");
                     }elseif($tipo["tipo"]=="amo"){
                         $relAM=new AmoMascotaModel();
                         if($relAM->eliminarRelacionesAmo($post["id"])){
                             $amoModel=new AmoModel();
                             if($amoModel->delete($post["id"])){
-                                return redirect()->to(base_url()."amo/")->with("success","El amo y sus relaciones han sido eliminadas con exito.");
+                                return redirect()->to(base_url()."amo/")->with("success","El amo y sus relaciones han sido dados de baja con exito.");
                             }
-                            return redirect()->to(base_url()."amo/")->with("error","Las relaciones del amo han sido borradas<br>Ocurrio un error al intentar eliminar al amo");
+                            return redirect()->to(base_url()."amo/")->with("error","Las relaciones del amo han sido dadas de baja<br>Ocurrio un error al intentar dar de baja al amo");
                         }
-                        return redirect()->to(base_url()."amo/")->with("error","Ocurrio un error al intentar eliminar al amo");
+                        return redirect()->to(base_url()."amo/")->with("error","Ocurrio un error al intentar dar de baja al amo");
                     }elseif($tipo["tipo"]=="veterinario"){
-                        $veterinarioModel=new VeterinarioModel();
-                        if($veterinarioModel->delete($post["id"])){
-                            return redirect()->to(base_url()."veterinario/")->with("success","El veterinario a sido eliminado con exito.");
+                        helper(['form', 'SpanishErrors_helper']);   
+                        $rule["fechaEgresoVet"]="required|valid_date";
+                        $validacion = service('validation');
+                        $validacion->setRules($rule,spanishErrorMessages($rule));
+                        if (!$validacion->withRequest($this->request)->run()) {
+                            return redirect()->to(base_url().'veterinario/baja_veterinario/'.$post["id"])->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
                         }
-                        return redirect()->to(base_url()."veterinario/")->with("error","Ocurrio un error al intentar eliminar al veterinario");
+                        $veterinarioModel=new VeterinarioModel();
+                        if($veterinarioModel->update($post["id"],["fechaEgresoVeterinario"=>$this->request->getPost("fechaEgresoVet")])){
+                            return redirect()->to(base_url()."veterinario/")->with("success","El veterinario a sido dado de baja con exito.");
+                        }
+                        return redirect()->to(base_url()."veterinario/")->with("error","Ocurrio un error al intentar dar de baja al veterinario");
                     }
                 }
                 return redirect()->to(base_url()."inicio")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
@@ -159,7 +166,7 @@ class Inicio extends BaseController
         }
         $data['tipo'] = $tipo;
         $data['entidad'] = $dataEntidad;
-
+        $data["cabeza"]=view("TrososView/headView");
         return view('modificar_view', $data);
     }
 

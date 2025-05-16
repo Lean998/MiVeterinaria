@@ -5,40 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= substr(base_url(),0,-17) ?>Plantilla/Css/inicio.css">
-    <title>Inicio</title>
+    <title>Dar Baja</title>
 </head>
 <body>
-    <header class="d-flex col-12 align-items-center justify-content-between">
-        <div class="col-auto ms-3"><a href="<?= base_url()."inicio"?>"><img class="img-fluid" src="<?= substr(base_url(),0,-17)?>Plantilla/imgs/MenuLogo.jpg" alt="Logo"></a></div>
-        <div class="col-10">
-            <ul class="d-flex mb-0">
-                <li class="dropdown-item">
-                    <a class=" text-reset text-decoration-none" href="<?= base_url()."inicio/mascotas"?>">Mascotas</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('inicio/amos')?>">Amos</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url('inicio/veterinarios')?>">Veterinarios</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/amo_mascotas"?>">Amo_Mascotas</a>
-                </li>
-                <li class="dropdown-item">
-                    <a class="dropdown-item text-reset text-decoration-none" href="<?= base_url()."inicio/mascota_amos"?>">Mascota_Amos</a>
-                </li>
-            </ul>
-        </div>
-    </header>
+    <?php
+        if(isset($cabeza))echo $cabeza;
+    ?>
     <div class="container py-3">
         <div id="mensaje-success" class="alert d-none" role="alert"></div>
     </div>
     <section class="divEliminar d-flex col-12 flex-column justify-content-center align-items-center mb-3">
         <div class="col-10 d-flex flex-column align-items-center">
             <div class="col-8 d-flex flex-column align-items-center justify-content-center">
-                <h2 class="m-5">¿Seguro que quiere proceder con la eliminacion?</h2>
-                <form id="formEliminar" class="col-12 d-flex flex-column justify-content-center align-items-center m-4" action="<?=base_url()?>inicio/eliminar" method="post">
-                    <div class="col-5 d-flex flex-column">
+                <h2 class="m-5">¿Seguro que quiere proceder con la Baja?</h2>
+                <form id="formEliminar" class="col-12 d-flex flex-column justify-content-center align-items-center m-4" action="<?=base_url()?>inicio/baja" method="post">
+                    <?php if(isset($tipo))if($tipo=="veterinario"){?>
+                    <div class="col-4 mb-5">
+                        <label for="fechaEgresoVet" class="form-label">Fecha de Egreso</label>
+                        <input type="datetime-local" class="form-control <?= session('errors.fechaEgresoVet') ? 'is-invalid' : '' ?>" value="<?= old('fechaEgresoVet') ?>" id="fechaEgresoVet" name="fechaEgresoVet" max="<?php date_default_timezone_set("America/Argentina/Buenos_Aires"); echo date("Y-m-d H:i");?>" >
+                        <div class="col-10 invalid-feedback">
+                            <?= str_replace("fechaEgresoVet","La fecha del suceso",session('errors.fechaEgresoVet')) ?? '' ?>
+                        </div>
+                    </div>
+                    <?php }?>
+                    <div class="col-6 d-flex flex-column">
                         <input type="text" name="id" id="id" hidden value="<?php if(isset($id)) echo $id;?>">
                         <input type="text" name="tipo" id="tipo" hidden value="<?php if(isset($tipo)) echo $tipo;?>">
                         <button type="submit" class="btn btn-primary">Proceder</button>

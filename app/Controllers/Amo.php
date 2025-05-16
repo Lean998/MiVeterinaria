@@ -21,6 +21,7 @@ class Amo extends BaseController {
             'idAmos' => $idAmos,
         ];
         $data["tipoMetodo"]="Amos";
+        $data["cabeza"]=view("TrososView/headView");
         return view('inicioView', $data);
     }
 
@@ -89,13 +90,15 @@ class Amo extends BaseController {
         }
     }
 
-    public function eliminarAmo($id){
+    public function bajaAmo($id){
         try{
             if(isset($id)){
                 $amoModel=new AmoModel();
                 $amo=$amoModel->getAmo($id);
                 if(isset($amo)){if(!empty($amo)){
-                    return view("eliminarView",["id"=>$id,"tipo"=>"amo"]);
+                    $data=["id"=>$id,"tipo"=>"amo"];
+                    $data["cabeza"]=view("TrososView/headView");
+                    return view("eliminarView",$data);
                 }else return redirect()->to(base_url()."amo/")->with("error","El amo no se encuentra en la tabla");
                 }else return redirect()->to(base_url()."amo/")->with("error","Ocurrio un error al momento de intentar obtener al amo");
             }

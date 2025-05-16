@@ -23,6 +23,7 @@ class Mascota extends BaseController
             'idMascotas' => $idMascotas,
         ];
         $data["tipoMetodo"]="Mascotas";
+        $data["cabeza"]=view("TrososView/headView");
         return view('inicioView', $data);
     }
     public function altaMascotas(){
@@ -90,13 +91,15 @@ class Mascota extends BaseController
         }
     }
 
-    public function eliminarMascota($id){
+    public function bajaMascota($id){
         try{
             if(isset($id)){
                 $mascotaModel=new MascotaModel();
                 $mascota=$mascotaModel->getMascota($id);
                 if(isset($mascota)){if(!empty($mascota)){
-                    return view("eliminarView",["id"=>$id,"tipo"=>"mascota"]);
+                    $data=["id"=>$id,"tipo"=>"mascota"];
+                    $data["cabeza"]=view("TrososView/headView");
+                    return view("eliminarView",$data);
                 }else return redirect()->to(base_url()."mascota/")->with("error","La mascota no se encuentra en la tabla");
                 }else return redirect()->to(base_url()."mascota/")->with("error","Ocurrio un error al momento de intentar obtener la mascota");
             }
@@ -112,7 +115,9 @@ class Mascota extends BaseController
                 $mascotaModel=new MascotaModel();
                 $mascota=$mascotaModel->getMascota($id);
                 if(isset($mascota)){if(!empty($mascota)){
-                    return view("difuntoView",["id"=>$id]);
+                    $data=["id"=>$id];
+                    $data["cabeza"]=view("TrososView/headView");
+                    return view("difuntoView",$data);
                 }else return redirect()->to(base_url()."mascota/")->with("error","La mascota no se encuentra en la tabla");
                 }else return redirect()->to(base_url()."mascota/")->with("error","Ocurrio un error al momento de intentar obtener la mascota");
             }else{
@@ -148,14 +153,14 @@ class Mascota extends BaseController
             $mascotas=$mascotasModel->getAllMascotas();
             $idMascotas=$mascotasModel->getAllIdMascotas();
         } catch(Error $e){
-            return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
+            return redirect()->to(base_url()."mascota")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
         }
         $data['datos'] = [
             'todasMascotas' => $mascotas,
             'idMascotas' => $idMascotas,
         ];
         $data["tipoMetodo"]="TodasMascotas";
-        
+        $data["cabeza"]=view("TrososView/headView");
         return view('inicioView', $data);
     }
 }

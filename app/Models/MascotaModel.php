@@ -16,19 +16,28 @@ class MascotaModel extends Model{
     public function getAllMascotasVivas(){
         return $this->select("mascotas.idMascota AS id,nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota")
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
-        ->where("mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL")
+        ->where("AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
     public function getAllMascotas(){
-        return $this->select("mascotas.idMascota AS id, nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota, fechaDefuncionMascota")
-        ->findAll();
+        $db = \Config\Database::connect();
+        $sql='SELECT mascotas.idMascota AS id, mascotas.nombreMascota, mascotas.edadMascota, mascotas.especieMascota, mascotas.razaMascota, mascotas.fechaAltaMascota, CASE WHEN AmosMascotas.fechaFinAmoMascota IS NULL THEN AmosMascotas.fechaInicioAmoMascota ELSE NULL END AS fechaInicioAmoMascota
+                                    FROM mascotas
+                                    LEFT JOIN amosmascotas ON AmosMascotas.idMascota = mascotas.idMascota
+                                    WHERE mascotas.deleted_at IS NULL
+                                    ORDER BY id DESC
+                                    ';
+        $query   = $db->query($sql);
+        $mascotas = $query->getResultArray();
+        $db->close();
+        return $mascotas;
     }
 
     public function getAllMascotasVivasList(){
         return $this->select("mascotas.idMascota, mascotas.nombreMascota")
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
-        ->where("mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL")
+        ->where("AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
@@ -42,13 +51,22 @@ class MascotaModel extends Model{
     public function getAllIdMascotasVivas(){
         return $this->select("mascotas.idMascota AS id")
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
-        ->where("mascotas.fechaDefuncionMascota IS NULL AND AmosMascotas.idMascota IS NULL")
+        ->where("AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
         ->findAll();
     }
     public function getAllIdMascotas(){
-        return $this->select("mascotas.idMascota AS id")
-        ->findAll();
+        $db = \Config\Database::connect();
+        $sql='SELECT mascotas.idMascota AS id
+                                    FROM mascotas
+                                    LEFT JOIN amosmascotas ON AmosMascotas.idMascota = mascotas.idMascota
+                                    WHERE mascotas.deleted_at IS NULL
+                                    ORDER BY id DESC
+                                    ';
+        $query   = $db->query($sql);
+        $mascotas = $query->getResultArray();
+        $db->close();
+        return $mascotas;
     }
 
     public function getFechaDefuncionMascota($id){
