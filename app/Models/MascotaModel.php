@@ -7,8 +7,8 @@ class MascotaModel extends Model{
     protected $primaryKey = 'idMascota';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $allowedFields = ['nombreMascota', 'especieMascota','razaMascota','edadMascota','fechaAltaMascota','fechaDefuncionMascota'];
+    protected $useSoftDeletes = true;
+    protected $allowedFields = ['nombreMascota', 'especieMascota','razaMascota','edadMascota','fechaAltaMascota','fechaDefuncionMascota','deleted_at'];
     protected bool $updateOnlyChanged = true;
     protected $useTimestamps = false;
     protected $dateFormat = 'datetime';

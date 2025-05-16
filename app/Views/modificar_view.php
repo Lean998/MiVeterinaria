@@ -44,49 +44,82 @@
             <?php if($tipo === 'mascota') { ?>
                 <div class="mb-3">
                     <label for="nombreMascota" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" id="nombreMascota" name="nombreMascota" value="<?= old('nombreMascota', $entidad['nombreMascota']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.nombreMascota') ? 'is-invalid' : '' ?>" id="nombreMascota" name="nombreMascota" value="<?= old('nombreMascota', $entidad['nombreMascota']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("nombreMascota","El nombre",session('errors.nombreMascota')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="especieMascota" class="form-label">Especie:</label>
-                    <input type="text" class="form-control" id="especieMascota" name="especieMascota" value="<?= old('especieMascota', $entidad['especieMascota']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.especieMascota') ? 'is-invalid' : '' ?>" id="especieMascota" name="especieMascota" value="<?= old('especieMascota', $entidad['especieMascota']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("especieMascota","La especie",session('errors.especieMascota')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="razaMascota" class="form-label">Raza:</label>
-                    <input type="text" class="form-control" id="razaMascota" name="razaMascota" value="<?= old('razaMascota', $entidad['razaMascota']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.razaMascota') ? 'is-invalid' : '' ?>" id="razaMascota" name="razaMascota" value="<?= old('razaMascota', $entidad['razaMascota']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("razaMascota","La raza",session('errors.razaMascota')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="edadMascota" class="form-label">Edad:</label>
-                    <input type="number" class="form-control" id="edadMascota" name="edadMascota" value="<?= old('edadMascota', $entidad['edadMascota']) ?>" required>
+                    <input type="number" class="form-control <?= session('errors.edadMascota') ? 'is-invalid' : '' ?>" id="edadMascota" name="edadMascota" value="<?= old('edadMascota', $entidad['edadMascota']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("edadMascota","La edad",session('errors.edadMascota')) ?? '' ?>
+                    </div>
                 </div>
             <?php } elseif($tipo === 'amo') { ?>
                 <div class="mb-3">
                     <label for="nombreAmo" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" id="nombreAmo" name="nombreAmo" value="<?= old('nombreAmo', $entidad['nombreAmo']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.nombreAmo') ? 'is-invalid' : '' ?>" id="nombreAmo" name="nombreAmo" value="<?= old('nombreAmo', $entidad['nombreAmo']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("nombreAmo","El nombre",session('errors.nombreAmo')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="apellidoAmo" class="form-label">Apellido:</label>
-                    <input type="text" class="form-control" id="apellidoAmo" name="apellidoAmo" value="<?= old('apellidoAmo', $entidad['apellidoAmo']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.apellidoAmo') ? 'is-invalid' : '' ?>" id="apellidoAmo" name="apellidoAmo" value="<?= old('apellidoAmo', $entidad['apellidoAmo']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("apellidoAmo","El apellido",session('errors.apellidoAmo')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="telefonoAmo" class="form-label">Telefono:</label>
-                    <input type="text" class="form-control" id="telefonoAmo" name="telefonoAmo" value="<?= old('telefonoAmo', $entidad['telefonoAmo']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.telefonoAmo') ? 'is-invalid' : '' ?>" id="telefonoAmo" name="telefonoAmo" value="<?= old('telefonoAmo', $entidad['telefonoAmo']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("telefonoAmo","El telefono",session('errors.telefonoAmo')) ?? '' ?>
+                    </div>
                 </div>
             <?php } elseif ($tipo === 'veterinario') { ?>
                 <div class="mb-3">
                     <label for="nombreVeterinario" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" id="nombreVeterinario" name="nombreVeterinario" value="<?= old('nombreVeterinario', $entidad['nombreVeterinario']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.nombreVeterinario') ? 'is-invalid' : '' ?>" id="nombreVeterinario" name="nombreVeterinario" value="<?= old('nombreVeterinario', $entidad['nombreVeterinario']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("nombreVeterinario","El nombre",session('errors.nombreVeterinario')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="apellidoVeterinario" class="form-label">Apellido:</label>
-                    <input type="text" class="form-control" id="apellidoVeterinario" name="apellidoVeterinario" value="<?= old('apellidoVeterinario', $entidad['apellidoVeterinario']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.apellidoVeterinario') ? 'is-invalid' : '' ?>" id="apellidoVeterinario" name="apellidoVeterinario" value="<?= old('apellidoVeterinario', $entidad['apellidoVeterinario']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("apellidoVeterinario","El apellido",session('errors.apellidoVeterinario')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="especialidadVeterinario" class="form-label">Especialidad:</label>
-                    <input type="text" class="form-control" id="especialidadVeterinario" name="especialidadVeterinario" value="<?= old('especialidadVeterinario', $entidad['especialidadVeterinario']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.especialidadVeterinario') ? 'is-invalid' : '' ?>" id="especialidadVeterinario" name="especialidadVeterinario" value="<?= old('especialidadVeterinario', $entidad['especialidadVeterinario']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("especialidadVeterinario","La especialidad",session('errors.especialidadVeterinario')) ?? '' ?>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="telefonoVeterinario" class="form-label">Telefono::</label>
-                    <input type="text" class="form-control" id="telefonoVeterinario" name="telefonoVeterinario" value="<?= old('telefonoVeterinario', $entidad['telefonoVeterinario']) ?>" required>
+                    <input type="text" class="form-control <?= session('errors.telefonoVeterinario') ? 'is-invalid' : '' ?>" id="telefonoVeterinario" name="telefonoVeterinario" value="<?= old('telefonoVeterinario', $entidad['telefonoVeterinario']) ?>" required>
+                    <div class="invalid-feedback">
+                        <?= str_replace("telefonoVeterinario","El telefono",session('errors.telefonoVeterinario')) ?? '' ?>
+                    </div>
                 </div>
             <?php } else { ?>
                 <p class="text-danger">Tipo de entidad no válido.</p>
@@ -101,16 +134,12 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
-<?php if (session()->getFlashdata('mensaje')) : ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= session()->getFlashdata('mensaje'); ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?= session()->getFlashdata('error'); ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
+<script src="<?= substr(base_url(),0,-17) ?>Plantilla/scripts/mensajes.js"></script>
+<script>
+        <?php if (session('success')): ?>
+            mostrarMensaje('mensaje-success', <?= json_encode(session('success')) ?>, 'success');
+        <?php elseif(session('error')): ?>
+            mostrarMensaje('mensaje-success', <?= json_encode(session('error')) ?>, 'danger');
+        <?php endif ?>
+</script>
 </html>

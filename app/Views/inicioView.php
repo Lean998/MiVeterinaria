@@ -171,8 +171,9 @@
                         <th>Raza</th>
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
+                        <th style="width: 11rem;">Motivo Fin Relacion</th>
             ';
-            $tabla=generarTabla([],$tabla,6,$validNew);
+            $tabla=generarTabla([],$tabla,7,$validNew);
             $data=[
                 "table"=>$tabla
             ];
@@ -189,6 +190,7 @@
                         <th>Raza</th>
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
+                        <th style="width: 11rem;">Motivo Fin Relacion</th>
             ';
             if(isset($mascotas) && isset($idMascotas) && isset($idRel)){
                 for($i=0; $i<sizeof($mascotas); $i++){
@@ -198,10 +200,17 @@
                     }else{
                         $mascotas[$i]["fechaFinAmoMascota"]="";
                     }
+                    if($mascotas[$i]["motivoFin"]==1){
+                        $mascotas[$i]["motivoFin"]="Venta";
+                    }elseif($mascotas[$i]["motivoFin"]==2){
+                        $mascotas[$i]["motivoFin"]="Defuncion";
+                    }else{
+                        $mascotas[$i]["motivoFin"]="";
+                    }
                 }
-                $tabla=generarTabla($mascotas,$tabla,6,$validNew,$idMascotas,$idRel);
+                $tabla=generarTabla($mascotas,$tabla,7,$validNew,$idMascotas,$idRel);
             }else{
-                $tabla=generarTabla([],$tabla,6,$validNew);
+                $tabla=generarTabla([],$tabla,7,$validNew);
             }
             $data['table'] = $tabla;
             $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion</a>';
@@ -220,8 +229,9 @@
                         <th>Telefono</th>
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
+                        <th style="width: 11rem;">Motivo Fin Relacion</th>
             ';
-            $tabla=generarTabla([],$tabla,5,$validNew);
+            $tabla=generarTabla([],$tabla,6,$validNew);
             $data["table"]=$tabla;
             $data["invalidNew"]=true;
             return $data;
@@ -235,6 +245,7 @@
                         <th>Telefono</th>
                         <th style="width: 10rem;">Fecha Inicio Relacion</th>
                         <th style="width: 10rem;">Fecha Fin Relacion</th>
+                        <th style="width: 11rem;">Motivo Fin Relacion</th>
             ';
             if(isset($amos) && isset($idAmos)){
                 for($i=0; $i<sizeof($amos); $i++){
@@ -244,10 +255,17 @@
                     }else{
                         $amos[$i]["fechaFinAmoMascota"]="";
                     }
+                    if($amos[$i]["motivoFin"]==1){
+                        $amos[$i]["motivoFin"]="Venta";
+                    }elseif($amos[$i]["motivoFin"]==2){
+                        $amos[$i]["motivoFin"]="Defuncion";
+                    }else{
+                        $amos[$i]["motivoFin"]="";
+                    }
                 }
-                $tabla=generarTabla($amos,$tabla,5,$validNew,$idAmos,$idRel);
+                $tabla=generarTabla($amos,$tabla,6,$validNew,$idAmos,$idRel);
             }else{
-                $tabla=generarTabla([],$tabla,5,$validNew);
+                $tabla=generarTabla([],$tabla,6,$validNew);
             }
             $data['table'] = $tabla;
             if(isset($fechaDefuncion["fechaD"])||!$validNew){

@@ -34,7 +34,14 @@ class Inicio extends BaseController
             }
             try{
                 $relAmoMasc=new AmoMascotaModel();
-                if(!$relAmoMasc->update($post["idFinalRel"],["fechaFinAmoMascota"=>$post["fechaFinalRel"]])){
+                if($post["motivoFinalRel"]=="Fallecimiento"){
+                    $tipoFin=2;
+                }elseif($post["motivoFinalRel"]=="Venta"){
+                    $tipoFin=1;
+                }else{
+                    $tipoFin=null;
+                }
+                if(!$relAmoMasc->update($post["idFinalRel"],["fechaFinAmoMascota"=>$post["fechaFinalRel"],"motivoFin"=>$tipoFin])){
                     $relAmoMasc=null;
                     return redirect()->to(base_url()."inicio/finalizar_relacion/".$post["idFinalRel"])->with("error","Ocurrio un error al intentar finalizar la relacion");
                 }
@@ -172,8 +179,20 @@ class Inicio extends BaseController
         $idFieldName = 'id' . ucfirst($tipo);
 
         try {
+            helper(['form','spanishErrors_helper']);   
             switch ($tipo) {
                 case 'mascota':
+                    $rules = [
+                        'nombreMascota' => 'required|min_length[4]|max_length[255]|valid_alpha_space[nombreMascota]',
+                        'especieMascota' => 'required|min_length[4]|max_length[30]|valid_alpha_space[especieMascota]',
+                        'razaMascota' => 'required|min_length[4]|max_length[30]|valid_alpha_space[razaMascota]',
+                        'edadMascota' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]',
+                    ];
+                    $validacion = service('validation');
+                    $validacion->setRules($rules,spanishErrorMessages($rules));
+                    if (!$validacion->withRequest($this->request)->run()) {
+                        return redirect()->to(base_url().'/inicio/modificar/mascota/'.$this->request->getPost("id"))->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+                    }
                     $model = new MascotaModel();
                     $dataToUpdate = [
                         'nombreMascota' => $this->request->getPost('nombreMascota'),
@@ -185,6 +204,16 @@ class Inicio extends BaseController
                     $redireccionExito = base_url('mascota');
                     break;
                 case 'amo':
+                    $rules = [
+                        'nombreAmo' => 'required|min_length[5]|max_length[30]|valid_alpha_space[nombreAmo]',
+                        'apellidoAmo' => 'required|min_length[4]|max_length[30]|valid_alpha_space[apellidoAmo]',
+                        'telefonoAmo' => 'required|telefono_valido[telefonoAmo]',
+                    ];
+                    $validacion = service('validation');
+                    $validacion->setRules($rules,spanishErrorMessages($rules));
+                    if (!$validacion->withRequest($this->request)->run()) {
+                        return redirect()->to(base_url().'/inicio/modificar/amo/'.$this->request->getPost("id"))->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+                    }
                     $model = new AmoModel();
                     $dataToUpdate = [
                         'nombreAmo'     => $this->request->getPost('nombreAmo'),
@@ -194,14 +223,31 @@ class Inicio extends BaseController
                     $redireccionExito = base_url('amo');
                     break;
                 case 'veterinario':
+                    $rules = [
+                        'nombreVeterinario' => 'required|min_length[5]|max_length[30]|valid_alpha_space[nombreVeterinario]',
+                        'apellidoVeterinario' =>  'required|min_length[4]|max_length[30]|valid_alpha_space[apellidoVeterinario]',
+                        'especialidadVeterinario' => 'required|min_length[4]|max_length[30]|valid_alpha_space[especialidadVeterinario]',
+                        'telefonoVeterinario' => 'required|telefono_valido[telefonoVeterinario]',
+                    ];
+                    $fechaEgreso=$this->request->getPost("fechaEgresoVeterinario");
+                    if(isset($fechaEgreso)){
+                        $rules["fechaEgresoVeterinario"]='valid_date';
+                    }
+                    $validacion = service('validation');
+                    $validacion->setRules($rules,spanishErrorMessages($rules));
+                    if (!$validacion->withRequest($this->request)->run()) {
+                        return redirect()->to(base_url().'/inicio/modificar/veterinario/'.$id)->withInput()->with('errors', $validacion->getErrors())->with('error', 'Datos invalidos, revise los datos ingresados!');
+                    }
                     $model = new VeterinarioModel();
                     $dataToUpdate = [
                         'nombreVeterinario' => $this->request->getPost('nombreVeterinario'),
                         'apellidoVeterinario' => $this->request->getPost('apellidoVeterinario'),
                         'especialidadVeterinario' => $this->request->getPost('especialidadVeterinario'),
                         'telefonoVeterinario' => $this->request->getPost('telefonoVeterinario'),
-                        'fechaEgresoVeterinario' => $this->request->getPost('fechaEgresoVeterinario'), 
                     ];
+                    if(isset($fechaEgreso)){
+                       $dataToUpdate['fechaEgresoVeterinario']=$this->request->getPost('fechaEgresoVeterinario'); 
+                    }
                     $redireccionExito = base_url('veterinario');
                     break;
                 default:

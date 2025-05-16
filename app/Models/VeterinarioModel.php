@@ -7,8 +7,8 @@ class VeterinarioModel extends Model{
     protected $primaryKey = 'idVeterinario';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $allowedFields = ['nombreVeterinario', 'apellidoVeterinario','especialidadVeterinario','telefonoVeterinario','fechaIngresoVeterinario','fechaEgresoVeterinario'];
+    protected $useSoftDeletes = true;
+    protected $allowedFields = ['nombreVeterinario', 'apellidoVeterinario','especialidadVeterinario','telefonoVeterinario','fechaIngresoVeterinario','fechaEgresoVeterinario','deleted_at'];
     protected bool $updateOnlyChanged = true;
     protected $useTimestamps = false;
     protected $dateFormat = 'datetime';

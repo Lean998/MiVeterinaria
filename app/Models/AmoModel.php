@@ -7,8 +7,8 @@ class AmoModel extends Model{
     protected $primaryKey = 'idAmo';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $allowedFields = ['nombreAmo', 'apellidoAmo','direccionAmo','telefonoAmo','fechaAltaAmo'];
+    protected $useSoftDeletes = true;
+    protected $allowedFields = ['nombreAmo', 'apellidoAmo','direccionAmo','telefonoAmo','fechaAltaAmo','deleted_at'];
     protected bool $updateOnlyChanged = true;
     protected $useTimestamps = false;
     protected $dateFormat = 'datetime';
