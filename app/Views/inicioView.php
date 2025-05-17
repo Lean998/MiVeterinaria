@@ -6,7 +6,7 @@
                             }
                             break;
         case "TodasMascotas": if(isset($datos["todasMascotas"])&&isset($datos["idMascotas"])){
-                            $data=todasMascotas($datos["todasMascotas"],$datos["idMascotas"]);
+                            $data=todasMascotas($datos["todasMascotas"],$datos["idMascotas"],$datos["idsRel"]);
                             }
                             break;
         case "Amos": if(isset($datos["amos"])&&isset($datos["idAmos"])){
@@ -54,7 +54,12 @@
                 if(isset($valor["nombreAmo"])){$metodoModificar=true;$metodoBaja="amo/baja_amo";}
                 if(isset($valor["nombreVeterinario"])){$metodoModificar=true;$metodoBaja="veterinario/baja_veterinario";}
 
-                if($idsRel!=null)if(!empty($idsRel))if(isset($valor["fechaFinAmoMascota"]))if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="inicio/finalizar_relacion";$validNew=false;}
+                if($idsRel!=null)if(!empty($idsRel))
+                if(isset($valor["fechaFinAmoMascota"])){
+                    if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="inicio/finalizar_relacion";$validNew=false;}
+                }elseif(isset($valor["fechaInicioAmoMascota"]) && isset($valor["fechaAltaMascota"])){
+                    if($valor["fechaInicioAmoMascota"]!=""){$metodoFinalizar="inicio/finalizar_relacion";}
+                }
                 
                 $tabla.='<td><div class="dropdown options">
                             <button class="btn dropdown-toggle dark btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
@@ -79,30 +84,41 @@
                                 </li>';
                 
                 if(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"])){
-                                    $tipoEntidad = '';
-                                    if (isset($valor["nombreMascota"])) $tipoEntidad = 'mascota';
-                                    elseif (isset($valor["nombreAmo"])) $tipoEntidad = 'amo';
-                                    elseif (isset($valor["nombreVeterinario"]) && !isset($valor["fechaEgresoVeterinario"])) $tipoEntidad = 'veterinario';
-                                    
-                                    if($tipoEntidad !== ''){
-                                        $tabla.='<li>
-                                         <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/modificar/".$tipoEntidad."/".$ids[$i]["id"]).'">Modificar</a>
-                                        </li>';
-                                    }
+                    $tipoEntidad = '';
+                    if (isset($valor["nombreMascota"])) $tipoEntidad = 'mascota';
+                    elseif (isset($valor["nombreAmo"])) $tipoEntidad = 'amo';
+                    elseif (isset($valor["nombreVeterinario"]) && !isset($valor["fechaEgresoVeterinario"])) $tipoEntidad = 'veterinario';
+                    
+                    if($tipoEntidad !== ''){
+                        $tabla.='<li>
+                            <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/modificar/".$tipoEntidad."/".$ids[$i]["id"]).'">Modificar</a>
+                        </li>';
+                    }
+                }elseif(isset($metodoModificar) && isset($valor["nombreAmo"])){
+                    $tipoEntidad = '';
+                    if (isset($valor["nombreMascota"])) $tipoEntidad = 'mascota';
+                    elseif (isset($valor["nombreAmo"])) $tipoEntidad = 'amo';
+                    elseif (isset($valor["nombreVeterinario"]) && !isset($valor["fechaEgresoVeterinario"])) $tipoEntidad = 'veterinario';
+                    
+                    if($tipoEntidad !== ''){
+                        $tabla.='<li>
+                            <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/modificar/".$tipoEntidad."/".$ids[$i]["id"]).'">Modificar</a>
+                        </li>';
+                    }
                 }
 
                 if(isset($metodoFinalizar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoFinalizar."/".$idsRel[$i]["id"]).'">Finalizar Relacion</a>
                                 </li>';
                 
-                if(isset($metodoBaja) && !isset($valor["motivoFin"]) && !isset($valor["fechaEgresoVeterinario"]))$tabla.='<li>
+                if(isset($metodoBaja) && !isset($valor["motivoFin"]) && !isset($valor["fechaEgresoVeterinario"]) && !isset($metodoFinalizar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
                                 </li>';
-                else
-                if(isset($valor["motivoFin"]))
-                if($valor["motivoFin"]!="Defuncion")$tabla.='<li>
-                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
-                                </li>';
+                elseif(isset($valor["motivoFin"]) && isset($valor["nombreAmo"])){
+                    if($valor["motivoFin"]!="Defuncion")$tabla.='<li>
+                                        <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
+                                    </li>';
+                }
                 
                 $tabla.='</ul>
                          </div></td>';
@@ -148,7 +164,7 @@
         return $data;
     }
 
-    function todasMascotas($mascotas,$idMascotas){
+    function todasMascotas($mascotas,$idMascotas,$idsRel){
         $validNew=true;
         $tabla = '
         <table>
@@ -169,7 +185,7 @@
                     $mascotas[$i]["fechaInicioAmoMascota"]=substr($mascotas[$i]["fechaInicioAmoMascota"],0,-9);
                 }
             }
-            $tabla=generarTabla($mascotas,$tabla,6,$validNew,$idMascotas);
+            $tabla=generarTabla($mascotas,$tabla,6,$validNew,$idMascotas,$idsRel);
         }else{
             $tabla=generarTabla([],$tabla,6,$validNew);
         }

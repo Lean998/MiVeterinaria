@@ -31,6 +31,25 @@ class amoMascotaModel extends Model{
         ->where('amosmascotas.idMascota', $mascotaId)
         ->findAll();
     }
+
+    public function getAllIdsRelacionTodasMascotas(){
+        $db = \Config\Database::connect();
+        $sql='  SELECT amoActual.id
+                FROM mascotas
+                LEFT JOIN (
+                        SELECT idMascota, idAmoMascota AS id
+                        FROM amosmascotas
+                        WHERE fechaFinAmoMascota IS NULL
+                    ) AS amoActual ON amoActual.idMascota = mascotas.idMascota
+                WHERE mascotas.deleted_at IS NULL
+                ORDER BY mascotas.idMascota DESC
+                                    ';
+        $query   = $db->query($sql);
+        $idRelMascotas = $query->getResultArray();
+        $db->close();
+        return $idRelMascotas;
+    }
+
     public function getAllIdMascotaAmos($mascotaId){
         return $this->select("idAmo AS id")->where("idMascota=".$mascotaId)->findAll();
     }

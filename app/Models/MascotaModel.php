@@ -22,9 +22,13 @@ class MascotaModel extends Model{
     }
     public function getAllMascotas(){
         $db = \Config\Database::connect();
-        $sql='SELECT mascotas.idMascota AS id, mascotas.nombreMascota, mascotas.edadMascota, mascotas.especieMascota, mascotas.razaMascota, mascotas.fechaAltaMascota, CASE WHEN AmosMascotas.fechaFinAmoMascota IS NULL THEN AmosMascotas.fechaInicioAmoMascota ELSE NULL END AS fechaInicioAmoMascota
+        $sql='SELECT mascotas.idMascota AS id, mascotas.nombreMascota, mascotas.edadMascota, mascotas.especieMascota, mascotas.razaMascota, mascotas.fechaAltaMascota, amoActual.fechaInicioAmoMascota
                                     FROM mascotas
-                                    LEFT JOIN amosmascotas ON AmosMascotas.idMascota = mascotas.idMascota
+                                    LEFT JOIN (
+                                                SELECT idMascota, fechaInicioAmoMascota
+                                                FROM amosmascotas
+                                                WHERE fechaFinAmoMascota IS NULL
+                                            ) AS amoActual ON amoActual.idMascota = mascotas.idMascota
                                     WHERE mascotas.deleted_at IS NULL
                                     ORDER BY id DESC
                                     ';

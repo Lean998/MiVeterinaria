@@ -149,15 +149,18 @@ class Mascota extends BaseController
 
     public function todasMascotas(){
         $mascotasModel=new MascotaModel();
+        $AMRel=new AmoMascotaModel();
         try{
             $mascotas=$mascotasModel->getAllMascotas();
             $idMascotas=$mascotasModel->getAllIdMascotas();
+            $idsRel=$AMRel->getAllIdsRelacionTodasMascotas();
         } catch(Error $e){
             return redirect()->to(base_url()."mascota")->with("error","Ocurrio un error inesperado. Estamos trabajando en ello");
         }
         $data['datos'] = [
             'todasMascotas' => $mascotas,
             'idMascotas' => $idMascotas,
+            'idsRel' => $idsRel
         ];
         $data["tipoMetodo"]="TodasMascotas";
         $data["cabeza"]=view("TrososView/headView");
