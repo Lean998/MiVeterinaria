@@ -57,6 +57,10 @@ class MiVeterinariaDBModel extends Model{
             "fechaDefuncionMascota" => [
                 "type" => "datetime",
                 "null" => true
+            ],
+            "deleted_at" => [
+                "type" => "datetime",
+                "null" => true
             ]
         ];
 
@@ -91,6 +95,10 @@ class MiVeterinariaDBModel extends Model{
             ],
             "fechaAltaAmo"=>[
                 "type" => "datetime",
+            ],
+            "deleted_at" => [
+                "type" => "datetime",
+                "null" => true
             ]
         ];
 
@@ -132,6 +140,10 @@ class MiVeterinariaDBModel extends Model{
             "fechaEgresoVeterinario" => [
                 "type" => "datetime",
                 "null" => true
+            ],
+            "deleted_at" => [
+                "type" => "datetime",
+                "null" => true
             ]
         ];
 
@@ -146,6 +158,11 @@ class MiVeterinariaDBModel extends Model{
     }
     private function initAmoMascotaModel(){
         $fields=[
+            "idAmoMascota" => [
+                "type" => "INT",
+                "unasigned" => true,
+                "auto_increment" => true
+            ],
             "idAmo" => [
                 "type" => "INT",
                 "null" => true,
@@ -163,8 +180,13 @@ class MiVeterinariaDBModel extends Model{
                 "type" => "datetime",
                 "null" => true
             ],
+            "deleted_at" => [
+                "type" => "datetime",
+                "null" => true
+            ]
         ];
 
+        $this->forge->addPrimaryKey("idAmoMascota");
         $this->forge->addForeignKey("idAmo",
                                     "Amos",
                                     "idAmo",
