@@ -34,7 +34,7 @@ class amoMascotaModel extends Model{
 
     public function getAllIdsRelacionTodasMascotas(){
         $db = \Config\Database::connect();
-        $sql='  SELECT amoActual.id
+        $sql='  SELECT CASE WHEN amoActual.id IS NULL THEN "" ELSE amoActual.id END AS id
                 FROM mascotas
                 LEFT JOIN (
                         SELECT idMascota, idAmoMascota AS id

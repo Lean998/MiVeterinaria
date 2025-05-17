@@ -53,12 +53,14 @@
                 if(isset($valor["nombreMascota"])){$metodoModificar=true;$metodoBaja="mascota/baja_mascota";}
                 if(isset($valor["nombreAmo"])){$metodoModificar=true;$metodoBaja="amo/baja_amo";}
                 if(isset($valor["nombreVeterinario"])){$metodoModificar=true;$metodoBaja="veterinario/baja_veterinario";}
-
-                if($idsRel!=null)if(!empty($idsRel))
-                if(isset($valor["fechaFinAmoMascota"])){
-                    if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="inicio/finalizar_relacion";$validNew=false;}
-                }elseif(isset($valor["fechaInicioAmoMascota"]) && isset($valor["fechaAltaMascota"])){
-                    if($valor["fechaInicioAmoMascota"]!=""){$metodoFinalizar="inicio/finalizar_relacion";}
+                $metodoFinalizar=null;
+                if($idsRel!=null)if(!empty($idsRel)){
+                    if(isset($valor["fechaFinAmoMascota"])){
+                        if($valor["fechaFinAmoMascota"]==""){$metodoFinalizar="inicio/finalizar_relacion";$validNew=false;}
+                    }
+                    elseif(isset($valor["fechaInicioAmoMascota"]) && isset($valor["fechaAltaMascota"])){
+                        if($valor["fechaInicioAmoMascota"]!="" && $idsRel[$i]["id"]!=""){$metodoFinalizar="inicio/finalizar_relacion";}
+                    }
                 }
                 
                 $tabla.='<td><div class="dropdown options">
@@ -106,10 +108,11 @@
                         </li>';
                     }
                 }
-
-                if(isset($metodoFinalizar))$tabla.='<li>
-                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoFinalizar."/".$idsRel[$i]["id"]).'">Finalizar Relacion</a>
-                                </li>';
+                if(isset($metodoFinalizar)){
+                    $tabla.='<li>
+                                <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoFinalizar."/".$idsRel[$i]["id"]).'">Finalizar Relacion</a>
+                            </li>';
+                }
                 
                 if(isset($metodoBaja) && !isset($valor["motivoFin"]) && !isset($valor["fechaEgresoVeterinario"]) && !isset($metodoFinalizar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
@@ -118,7 +121,7 @@
                     if($valor["motivoFin"]!="Defuncion")$tabla.='<li>
                                         <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
                                     </li>';
-                }
+                }elseif(isset($metodoBaja) && !$metodoFinalizar && isset($valor["fechaAltaMascota"]))
                 
                 $tabla.='</ul>
                          </div></td>';

@@ -18,11 +18,12 @@ class MascotaModel extends Model{
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
         ->where("AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
+        ->orderBy("mascotas.idMascota","desc")
         ->findAll();
     }
     public function getAllMascotas(){
         $db = \Config\Database::connect();
-        $sql='SELECT mascotas.idMascota AS id, mascotas.nombreMascota, mascotas.edadMascota, mascotas.especieMascota, mascotas.razaMascota, mascotas.fechaAltaMascota, amoActual.fechaInicioAmoMascota
+        $sql='SELECT mascotas.idMascota AS id, mascotas.nombreMascota, mascotas.edadMascota, mascotas.especieMascota, mascotas.razaMascota, mascotas.fechaAltaMascota, CASE WHEN amoActual.fechaInicioAmoMascota IS NULL THEN "" ELSE amoActual.fechaInicioAmoMascota END AS fechaInicioAmoMascota
                                     FROM mascotas
                                     LEFT JOIN (
                                                 SELECT idMascota, fechaInicioAmoMascota
@@ -43,10 +44,11 @@ class MascotaModel extends Model{
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
         ->where("AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
+        ->orderBy("mascotas.idMascota","desc")
         ->findAll();
     }
     public function getAllMascotasList(){
-        return $this->select("idMascota, nombreMascota")->findAll();
+        return $this->select("idMascota, nombreMascota")->orderBy("mascotas.idMascota","desc")->findAll();
     }
 
     public function getMascota($id){
@@ -57,6 +59,7 @@ class MascotaModel extends Model{
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
         ->where("AmosMascotas.idMascota IS NULL")
         ->groupBy("mascotas.idMascota")
+        ->orderBy("mascotas.idMascota","desc")
         ->findAll();
     }
     public function getAllIdMascotas(){

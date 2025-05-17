@@ -14,10 +14,10 @@ class AmoModel extends Model{
     protected $dateFormat = 'datetime';
 
     public function getAllAmosList(){
-        return $this->select("idAmo, nombreAmo, apellidoAmo")->findAll();
+        return $this->select("idAmo, nombreAmo, apellidoAmo")->orderBy("nombreAmo","asc")->findAll();
     }
     public function getAllAmos(){
-        return $this->select("nombreAmo, apellidoAmo, telefonoAmo, fechaAltaAmo")->findAll();
+        return $this->select("nombreAmo, apellidoAmo, telefonoAmo, fechaAltaAmo")->orderBy("nombreAmo","asc")->findAll();
     }
 
     public function getAmo($id){
