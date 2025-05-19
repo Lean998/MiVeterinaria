@@ -81,7 +81,7 @@
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("mascota_amos/new_relacion_mascota_amo/".$ids[$i]["id"]).'">Nueva Relacion</a>
                                 </li>';
                 
-                if(isset($valor["nombreAmo"]))$tabla.='<li>
+                if(isset($valor["nombreAmo"]) && !isset($valor["fechaInicioAmoMascota"]))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$ids[$i]["id"]).'">Nueva Relacion</a>
                                 </li>';
                 
@@ -96,7 +96,7 @@
                             <a class="dropdown-item text-reset text-decoration-none" href="'.base_url("inicio/modificar/".$tipoEntidad."/".$ids[$i]["id"]).'">Modificar</a>
                         </li>';
                     }
-                }elseif(isset($metodoModificar) && isset($valor["nombreAmo"])){
+                }elseif(isset($metodoModificar) && !isset($valor["fechaFinAmoMascota"])){
                     $tipoEntidad = '';
                     if (isset($valor["nombreMascota"])) $tipoEntidad = 'mascota';
                     elseif (isset($valor["nombreAmo"])) $tipoEntidad = 'amo';
@@ -117,11 +117,9 @@
                 if(isset($metodoBaja) && !isset($valor["motivoFin"]) && !isset($valor["fechaEgresoVeterinario"]) && !isset($metodoFinalizar))$tabla.='<li>
                                     <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
                                 </li>';
-                elseif(isset($valor["motivoFin"]) && isset($valor["nombreAmo"])){
-                    if($valor["motivoFin"]!="Defuncion")$tabla.='<li>
-                                        <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
-                                    </li>';
-                }elseif(isset($metodoBaja) && !$metodoFinalizar && isset($valor["fechaAltaMascota"]))
+                elseif(isset($metodoBaja) && !$metodoFinalizar && isset($valor["fechaAltaMascota"]))$tabla.='<li>
+                                    <a class="dropdown-item text-reset text-decoration-none" href="'.base_url($metodoBaja."/".$ids[$i]["id"]).'">Dar de baja</a>
+                                </li>';
                 
                 $tabla.='</ul>
                          </div></td>';
@@ -251,6 +249,7 @@
                 $tabla=generarTabla([],$tabla,7,$validNew);
             }
             $data['table'] = $tabla;
+            $data["amo"]=$amo;
             $data['newRelAmoMasc']='<a class="text-reset text-decoration-none" href="'.base_url("amo_mascotas/new_relacion_amo_mascota/".$amo).'">Agregar Relacion</a>';
             return $data;
         }
@@ -306,6 +305,7 @@
                 $tabla=generarTabla([],$tabla,6,$validNew);
             }
             $data['table'] = $tabla;
+            $data["mascota"]=$mascota;
             if(isset($fechaDefuncion["fechaD"])||!$validNew){
                 $data["invalidNew"]=true;
             }else{
@@ -366,6 +366,23 @@
         return $data;
     }
 
+    function mascotaSelected($id,$mascota){
+        if(isset($mascota["mascota"])){
+            if($id==$mascota["mascota"]){
+                return "selected";
+            }
+        }
+        return "";
+    }
+    function amoSelected($id,$amo){
+        if(isset($amo["amo"])){
+            if($id==$amo["amo"]){
+                return "selected";
+            }
+        }
+        return "";
+    }
+
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -390,7 +407,7 @@
                         <select class="me-2" name="listaAmos" id="ListaAmos">
                             <option value="" selected disabled>Seleccione un amo de la lista </option>
                             <?php foreach($mascota_amos_list as $amo){?>
-                                <?='<option name="amo" value=' .$amo['idAmo']. '>' .$amo['nombreAmo']. ' ' . $amo['apellidoAmo']. '</option>' ?>
+                                <?='<option name="amo" value="' .$amo['idAmo']. '" '.amoSelected($amo["idAmo"],$data).'>' .$amo['nombreAmo']. ' ' . $amo['apellidoAmo']. '</option>' ?>
                             <?php } ?>
                         </select>
                         <input type="submit" class="btn btn-sm btn-outline btn-primary" value="buscar" form="formularioAmoMascotas">
@@ -400,7 +417,7 @@
                         <select class="me-2" name="listaMascotas" id="listaMascotas">
                             <option value="" selected disabled>Seleccione una mascota de la lista </option>
                             <?php foreach($amo_mascotas_list as $mascota){?>
-                                <?='<option name="mascota" value=' .$mascota['idMascota']. '>' . $mascota['nombreMascota']. '</option>' ?>
+                                <?='<option name="mascota" value="'.$mascota['idMascota'].'" '.mascotaSelected($mascota["idMascota"],$data).'>' . $mascota['nombreMascota']. '</option>' ?>
                             <?php } ?>
                         </select>
                         <input type="submit" class="btn btn-sm btn-outline btn-primary" value="buscar" form="formularioMascotaAmos">

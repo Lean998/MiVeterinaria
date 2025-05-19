@@ -180,6 +180,11 @@ class MiVeterinariaDBModel extends Model{
                 "type" => "datetime",
                 "null" => true
             ],
+            "motivoFin" => [
+                "type" => "enum",
+                "constraint" => ["1","2"],
+                "null" => true
+            ],
             "deleted_at" => [
                 "type" => "datetime",
                 "null" => true
