@@ -12,7 +12,7 @@ class Amo extends BaseController {
         $amosModel=new AmoModel();
         try{
             $amos=$amosModel->getAllAmos();
-            $idAmos=$amosModel->select("idAmo AS id")->findAll();
+            $idAmos=$amosModel->select("idAmo AS id, nombreAmo")->orderBy("nombreAmo","asc")->findAll();
         } catch(Error $e){
             return redirect()->back()->with("mensaje",["error"=>"","mensaje"=>"Ocurrio un error inesperado. Estamos trabajando en ello"]);
         }

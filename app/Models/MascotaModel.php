@@ -15,8 +15,8 @@ class MascotaModel extends Model{
 
     public function getAllMascotasVivas(){
         return $this->select("mascotas.idMascota AS id,nombreMascota, edadMascota, especieMascota, razaMascota, fechaAltaMascota")
-        ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
-        ->where("AmosMascotas.idMascota IS NULL")
+        ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL AND AmosMascotas.deleted_at IS NULL","left")
+        ->where("AmosMascotas.idMascota IS NULL AND mascotas.deleted_at IS NULL")
         ->groupBy("mascotas.idMascota")
         ->orderBy("mascotas.idMascota","desc")
         ->findAll();
@@ -42,22 +42,22 @@ class MascotaModel extends Model{
     public function getAllMascotasVivasList(){
         return $this->select("mascotas.idMascota, mascotas.nombreMascota")
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
-        ->where("AmosMascotas.idMascota IS NULL")
+        ->where("AmosMascotas.idMascota IS NULL AND mascotas.deleted_at IS NULL")
         ->groupBy("mascotas.idMascota")
         ->orderBy("mascotas.idMascota","desc")
         ->findAll();
     }
     public function getAllMascotasList(){
-        return $this->select("idMascota, nombreMascota")->orderBy("mascotas.idMascota","desc")->findAll();
+        return $this->select("idMascota, nombreMascota")->where("mascotas.deleted_at IS NULL")->orderBy("mascotas.idMascota","desc")->findAll();
     }
 
     public function getMascota($id){
-        return $this->select("idMascota")->find($id);
+        return $this->select("idMascota")->where("mascotas.deleted_at IS NULL")->find($id);
     }
     public function getAllIdMascotasVivas(){
         return $this->select("mascotas.idMascota AS id")
         ->join("AmosMascotas","AmosMascotas.idMascota = mascotas.idMascota AND AmosMascotas.fechaFinAmoMascota IS NULL","left")
-        ->where("AmosMascotas.idMascota IS NULL")
+        ->where("AmosMascotas.idMascota IS NULL AND mascotas.deleted_at IS NULL AND AmosMascotas.deleted_at IS NULL")
         ->groupBy("mascotas.idMascota")
         ->orderBy("mascotas.idMascota","desc")
         ->findAll();
