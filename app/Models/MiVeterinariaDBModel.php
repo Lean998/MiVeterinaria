@@ -27,6 +27,7 @@ class MiVeterinariaDBModel extends Model{
             $this->initAmoModel();
             $this->initVeterinarioModel();
             $this->initAmoMascotaModel();
+            $this->initMascotaVeterinarioModel();
         }
     }
     private function initMascotaModel(){
@@ -211,5 +212,56 @@ class MiVeterinariaDBModel extends Model{
         ];
         $this->forge->addField($fields);
         $this->forge->createTable("AmosMascotas", true, $attributes);
+    }
+    private function initMascotaVeterinarioModel(){
+        $fields=[
+            "idMascotaVeterinario" => [
+                "type" => "INT",
+                "unasigned" => true,
+                "auto_increment" => true
+            ],
+            "idVeterinario" => [
+                "type" => "INT",
+                "null" => true,
+                "unasigned" => true
+            ],
+            "idMascota" => [
+                "type" => "INT",
+                "null" => true,
+                "unasigned" => true
+            ],
+            "fechaInicioMascotaVeterinario" => [
+                "type" => "datetime"
+            ],
+            "fechaFinMascotaVeterinario"=>[
+                "type" => "datetime",
+                "null" => true
+            ],
+            "deleted_at" => [
+                "type" => "datetime",
+                "null" => true
+            ]
+        ];
+
+        $this->forge->addPrimaryKey("idMascotaVeterinario");
+        $this->forge->addForeignKey("idVeterinario",
+                                    "Veterinarios",
+                                    "idVeterinario",
+                                    "cascade",
+                                    "cascade",
+                                    "fk_mascotaVeterinario_idVeterinario");
+        $this->forge->addForeignKey("idMascota",
+                                    "Mascotas",
+                                    "idMascota",
+                                    "cascade",
+                                    "cascade",
+                                    "fk_mascotaVeterinario_idMascota");
+        $attributes = [
+            'engine' => 'InnoDB',
+            'charset' => 'utf8mb4',
+            'collate'=> 'utf8mb4_unicode_ci',
+        ];
+        $this->forge->addField($fields);
+        $this->forge->createTable("MascotaVeterinario", true, $attributes);
     }
 }
